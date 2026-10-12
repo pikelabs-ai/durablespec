@@ -72,6 +72,35 @@ When a change does qualify, move the **one** document that owns it:
   whether something is built, deployed or waiting belongs in `status.md`.
 - **The spec describes the code on its own branch.** Where production runs something older or
   different, say so in `status.md`.
+- **Diagrams follow the [C4 model](https://c4model.com), drawn in Mermaid.** Mermaid renders on GitHub
+  and GitLab and stays plain text that diffs and merges. Draw only the levels that help:
+  - **System Context** in `purpose/overview.md`: the system as one box, the people who use it and the
+    outside systems it talks to.
+  - **Container** in `design/architecture.md`: the separately running or deployed parts (apps, services,
+    databases, queues) and how they connect.
+  - **Component** in an area document, only when its insides are complex enough to need a picture.
+  - **Never code level.** The code is the authority on that.
+
+  Use Mermaid flowcharts in C4 style rather than Mermaid's experimental C4 syntax, whose layout is poor:
+  each box gives a name, its type in brackets and one line on what it does; every arrow says what flows;
+  a subgraph marks the system boundary.
+  ```mermaid
+  flowchart LR
+    clerk["<b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"]
+    subgraph billing["Billing (this system)"]
+      app["<b>Web app</b><br/>[Container: React]<br/>Invoice screens"]
+      api["<b>API</b><br/>[Container: Java]<br/>Prices and sends invoices"]
+      db[("<b>Database</b><br/>[Container: PostgreSQL]<br/>Invoices, amounts in original currency")]
+    end
+    bank["<b>Bank</b><br/>[External system]<br/>Exchange rates"]
+    clerk -- "uses" --> app
+    app -- "JSON over HTTPS" --> api
+    api -- "reads and writes" --> db
+    api -- "daily rates" --> bank
+  ```
+  Draw a diagram once there is something to draw, roughly three or more parts or outside systems; a
+  sentence is enough before that. The diagram carries the structure and the prose carries the why, so
+  don't repeat in words what the diagram shows. Folder trees stay plain text.
 - **Short means short.** Roughly: overview one page, architecture up to three, each area one or two,
   each decision record half a page. The whole spec should read in about fifteen minutes; link to
   longer documents instead of copying them.

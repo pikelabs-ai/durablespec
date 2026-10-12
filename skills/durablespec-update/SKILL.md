@@ -4,7 +4,7 @@ description: Keep doc/spec accurate after a change. Use before a commit, when wr
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # durablespec-update
@@ -38,7 +38,20 @@ changes don't move the picture, and needless edits are the failure this skill ex
    a short new design document with `owns:`). An `owns:` entry pointing at a deleted path is drift: fix it.
 
 5. **Edit minimally.** Touch only what warrants it, at the level of what and why, never restating the
-   diff. Keep the existing voice. Then run `python3 doc/spec/durablespec.py index` and
+   diff. Keep the existing voice. Diagrams are part of the document they sit in:
+   - If the change adds, removes or reconnects something a diagram shows (a person, an outside system,
+     a container, a component), update that diagram in the same edit.
+   - If a document you are editing now describes three or more parts or outside systems and has no
+     diagram, add one, following the diagram convention in `doc/spec/README.md`. The overview gets the
+     System Context diagram and `architecture.md` the Container diagram.
+   - Never add a diagram for its own sake, or redraw one that is still true.
+
+   If that README predates diagrams, the essentials are: C4 levels (System Context in the overview,
+   Container in `architecture.md`, Component only where an area needs it, never code level), drawn as a
+   Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what it does`, every arrow is labeled,
+   and a subgraph marks the system boundary.
+
+   Then run `python3 doc/spec/durablespec.py index` and
    `python3 doc/spec/durablespec.py check`, and fix anything check reports.
 
 6. **Report.** List each file changed with one line on why, or say plainly that no spec change was

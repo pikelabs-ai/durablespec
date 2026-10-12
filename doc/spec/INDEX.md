@@ -34,3 +34,4 @@ Read this first. One line per document: what it is for, the ideas it covers, and
 - [ADR-0004: The folder stays doc/spec](adr/0004-folder-stays-doc-spec.md) — Why the folder is doc/spec and not doc/durablespec. · _concepts:_ folder, naming, doc/spec, credit, marketing
 - [ADR-0005: Rename OneSpec to DurableSpec](adr/0005-name-durablespec.md) — Why OneSpec was renamed DurableSpec. · _concepts:_ name, rename, onespec, openspec, marketing
 - [ADR-0006: Manage knowledge, not process](adr/0006-manage-knowledge-not-process.md) — Why DurableSpec manages what the team knows and never prescribes how the work gets done. · _concepts:_ scope, workflow, scaffolding, future-models
+- [ADR-0007: C4 diagrams, drawn in Mermaid](adr/0007-c4-diagrams-in-mermaid.md) — Why spec diagrams follow the C4 model and are drawn in Mermaid. · _concepts:_ diagrams, c4, mermaid, ascii, structurizr

@@ -4,7 +4,7 @@
 
 ![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
 
-> **Status: beta (v0.2).** The practice is in daily use. This repo has the installer, two Agent
+> **Status: beta (v0.3).** The practice is in daily use. This repo has the installer, two Agent
 > Skills and the check script; see [Getting started](#getting-started). More at
 > [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
 
@@ -153,6 +153,10 @@ A few conventions carry most of the weight:
   the document that describes it, and a document pointing at deleted code gets caught.
 - **Build status lives in one place,** `design/status.md`. Status notes scattered through design
   documents are the first thing to go stale.
+- **Diagrams follow the [C4 model](https://c4model.com), drawn in Mermaid:** a System Context
+  diagram in the overview, a Container diagram in the architecture, and Component diagrams only
+  where an area needs one. They render on GitHub and stay plain text. The skills draw them once
+  there is enough to show.
 - **Decision records are never edited.** To change a decision, write a new record that replaces
   the old one. When you cite a record from another repo, name the repo: `billing ADR-0004`, never
   a bare number.

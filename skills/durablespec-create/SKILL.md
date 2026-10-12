@@ -4,7 +4,7 @@ description: Create doc/spec, the spec of record, for a repo that doesn't have o
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # durablespec-create
@@ -18,10 +18,12 @@ installer adds those), stop and use `durablespec-update` instead.
 
 Short enough that a new engineer or tomorrow's agent reads it in minutes. Typically:
 
-- `purpose/overview.md`: what the system is, who it is for, what problem it solves
+- `purpose/overview.md`: what the system is, who it is for, what problem it solves, with a C4 System
+  Context diagram once it has users and outside systems to show
 - `purpose/glossary.md`: only terms a newcomer would trip on
 - `constitution/conventions.md`: tech stack and the standing rules the code actually follows
-- `design/architecture.md`: the parts, how they connect, where it runs
+- `design/architecture.md`: the parts, how they connect, where it runs, with a C4 Container diagram
+  once there are three or more parts
 - `design/<area>.md`: one per major part, each with `owns:` naming its code. In a monorepo (still one
   spec), group modules by what they do rather than one document per module; five to twelve areas is
   typical. Every top-level code folder should be owned by some document; empty placeholder modules go
@@ -45,6 +47,16 @@ Short enough that a new engineer or tomorrow's agent reads it in minutes. Typica
    choice and its reason, in the format the README gives, with status "recorded after the fact, from
    <evidence>". A choice with no recorded reason is described in the design document, not made into a
    decision record. Don't invent reasons.
+
+   Draw the C4 diagrams as the README's diagram convention says, once there is enough to draw. The
+   Container diagram comes from deployment files (compose, Terraform, Kubernetes, Dockerfiles, CI) and
+   entry points; the Context diagram from outside calls, SDKs, sign-in providers and what people tell
+   you. If the repo has older diagrams (ASCII, images, other tools) that are still true, redraw them in
+   Mermaid and link the originals rather than deleting them. If the README predates diagrams, the
+   essentials are: C4 levels (System Context in the overview, Container in `architecture.md`, Component
+   only where an area needs it, never code level), drawn as a Mermaid `flowchart`; each box gives
+   `<b>name</b><br/>[type]<br/>what it does`, every arrow is labeled, and a subgraph marks the system
+   boundary.
 
 3. **Ask.** List the questions the code can't answer, and ask the people: who it's for, why the odd parts
    are odd, which decisions were deliberate, what is planned. Bring a product owner to the purpose

@@ -5,10 +5,11 @@ concepts: [status, version, field-tests, beta]
 
 # Status
 
-As of 2026-10-12. **Version 0.2.0, beta. The repository is public.**
+As of 2026-10-12. **Version 0.3.0, beta. The repository is public.**
 
 **Built:** the two skills, the check script (index, check, version), the installer, the rules template and
-the `AGENTS.md` block. This repo uses its own spec.
+the `AGENTS.md` block. Since 0.3.0 the skills draw C4 diagrams in Mermaid
+([ADR-0007](../adr/0007-c4-diagrams-in-mermaid.md)). This repo uses its own spec, diagrams included.
 
 **Field-tested** (v0.2 came from what these found): a new spec for a small Node app with no prior spec; a
 draft central spec for a team's multi-module monorepo; and a spec written alongside a new infrastructure
