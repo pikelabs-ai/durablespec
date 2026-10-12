@@ -1,6 +1,6 @@
 ---
 name: durablespec-update
-description: Keep doc/spec accurate after a change. Use before a commit, when wrapping up a session with uncommitted work, or when asked to "update the spec" or "did the spec drift?". Reads the diff and the reasons behind it, updates only the spec documents that warrant it (usually none), rebuilds the index, and reports.
+description: Keep doc/spec accurate after a change. Use before a commit, when wrapping up a session with uncommitted work, or when asked to "update the spec", "did the spec drift?" or "add the C4 diagrams to the spec". Reads the diff and the reasons behind it, updates only the spec documents that warrant it (usually none), rebuilds the index, and reports.
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
@@ -12,6 +12,10 @@ metadata:
 Keep `doc/spec/` true to what changed. The policy is this repo's `doc/spec/README.md`; read it first if
 unsure. The spec is an abstraction over the code, not a mirror. **Bias hard toward not writing.** Most
 changes don't move the picture, and needless edits are the failure this skill exists to prevent.
+
+When asked only to add diagrams to an existing spec, skip the diff: read `purpose/overview.md`,
+`design/architecture.md` and the area documents, draw what is missing following the diagram guidance in
+step 5, then run the index and check.
 
 ## Procedure
 

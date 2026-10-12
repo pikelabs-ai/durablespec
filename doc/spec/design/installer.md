@@ -18,5 +18,9 @@ upgrades its own files and touches nothing else.
 - **`AGENTS.md`** gets the marked block, added or replaced between its markers. **`CLAUDE.md`** gets an
   `@AGENTS.md` line if it lacks one.
 
+- **Upgrade notes.** When an upgrade brings something it can't apply to an existing spec by itself
+  (diagrams in 0.3.0), the `NEWS` list in `install.py` prints what to ask the agent for. It reads the
+  repo's old version from its `durablespec.py` before replacing it.
+
 Installing by copying, rather than through a package manager, is deliberate
 ([ADR-0002](../adr/0002-stdlib-python-install-by-copy.md)).

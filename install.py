@@ -20,6 +20,12 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILLS = ["durablespec-create", "durablespec-update"]
 START, END = "<!-- durablespec:start -->", "<!-- durablespec:end -->"
+# Changes an upgrade can't apply to an existing spec by itself: (version, what to tell the user).
+NEWS = [
+    ((0, 3, 0), "C4 diagrams in Mermaid. Your spec gains them as documents change; to add them now, ask "
+                "your agent to \"add the C4 diagrams to the spec\". Your doc/spec/README.md was kept; "
+                "the DurableSpec repo's template/README.md has the new diagram section if you want it."),
+]
 
 
 def main(argv):
@@ -66,6 +72,10 @@ def main(argv):
 
     spec = os.path.join(repo, "doc", "spec")
     tool = os.path.join(spec, "durablespec.py")
+    old_version = None
+    if os.path.exists(tool):
+        found = re.search(r'^VERSION = "([0-9.]+)"', open(tool, encoding="utf-8").read(), re.M)
+        old_version = tuple(int(n) for n in found.group(1).split(".")) if found else (0,)
     do(("upgrade " if os.path.exists(tool) else "add ") + "doc/spec/durablespec.py",
        lambda: (os.makedirs(spec, exist_ok=True),
                 shutil.copy2(os.path.join(HERE, "template", "durablespec.py"), tool)))
@@ -106,6 +116,9 @@ def main(argv):
     if os.path.isdir(os.path.join(repo, "docs")):
         print("Note: this repo also has docs/. DurableSpec always uses doc/spec/ so every agent finds it in "
               "the same place; docs/ is left as it is.")
+    news = [text for version, text in NEWS if old_version is not None and old_version < version]
+    for text in news:
+        print("New since your version: " + text)
     if not dry:
         print("Commit: AGENTS.md, CLAUDE.md, .agents/skills/, .claude/skills/ and doc/spec/.")
         print("Next: ask your agent to create the spec (durablespec-create), or, if doc/spec already has "
