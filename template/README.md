@@ -101,8 +101,11 @@ When a change does qualify, move the **one** document that owns it:
   Draw a diagram once there is something to draw, roughly three or more parts or outside systems; a
   sentence is enough before that. The diagram carries the structure and the prose carries the why, so
   don't repeat in words what the diagram shows. Folder trees stay plain text.
-- **Short means short.** Roughly: overview one page, architecture up to three, each area one or two,
-  each decision record half a page. The whole spec should read in about fifteen minutes; link to
+- **Length follows from the intent; there is no target.** A spec stays short because it holds only
+  what the code can't say: what the system is for, how it is shaped, and why. Readers don't read it end
+  to end; they read the index and then the few documents their task needs, so each document covers one
+  thing. When a document grows long, it is usually restating the code, mixing several concerns, or
+  carrying history: cut the first, split the second, and move reasons into a decision record. Link to
   longer documents instead of copying them.
 - **One spec per repo,** monorepos included: each part is an area in `design/` with its own `owns:`.
 - **Mechanical checks:** `python3 doc/spec/durablespec.py check`. Rebuild the index after changing any

@@ -17,8 +17,6 @@ concepts: [backlog, todo, open-questions]
 - **Fixes from the 0.3 blind re-create of a large monorepo** (2026-10-12):
   - The README's decision-record example has no front matter, but every document needs it and `check`
     fails without it. Show front matter in the example.
-  - Length: a 19-module monorepo came out at about 12,000 words, against "about fifteen minutes". Say
-    what to cut, or accept a longer read for large repos with the index as the entry point.
   - Say whether overlapping `owns:` (a parent folder in one area, subfolders in another) is allowed, and
     which wins.
   - Give stale existing documents their own heading in `backlog.md`, apart from open questions. Cover a

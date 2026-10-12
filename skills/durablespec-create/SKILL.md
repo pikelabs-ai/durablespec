@@ -16,7 +16,8 @@ installer adds those), stop and use `durablespec-update` instead.
 
 ## What to aim for
 
-Short enough that a new engineer or tomorrow's agent reads it in minutes. Typically:
+Only what the code can't say, so a new engineer or tomorrow's agent finds what a task needs through the
+index and reads just that. There is no length target. Typically:
 
 - `purpose/overview.md`: what the system is, who it is for, what problem it solves, with a C4 System
   Context diagram once it has users and outside systems to show
