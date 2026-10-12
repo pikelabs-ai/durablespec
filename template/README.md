@@ -78,3 +78,8 @@ When a change does qualify, move the **one** document that owns it:
 - **One spec per repo,** monorepos included: each part is an area in `design/` with its own `owns:`.
 - **Mechanical checks:** `python3 doc/spec/durablespec.py check`. Rebuild the index after changing any
   front matter: `python3 doc/spec/durablespec.py index`.
+
+---
+
+This folder follows [DurableSpec](https://github.com/pikelabs-ai/durablespec), where the skills, the check script and
+upgrades live.

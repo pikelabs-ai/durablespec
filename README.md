@@ -4,7 +4,7 @@
 
 ![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
 
-> **Status: beta (v0.1).** The practice is in daily use. This repo has the installer, two Agent
+> **Status: beta (v0.2).** The practice is in daily use. This repo has the installer, two Agent
 > Skills and the check script; see [Getting started](#getting-started). More at
 > [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
 
