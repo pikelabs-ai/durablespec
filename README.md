@@ -32,13 +32,17 @@ the next.
   settled a design question yesterday, your session knows the answer today, without anyone
   writing a hand-off note or remembering to mention it.
 
-Three more benefits come with it:
+Four more benefits come with it:
 
 1. **One picture of the system for people and agents alike.** A new engineer, a product owner, or
    a fresh AI session gets oriented from the same few documents in minutes.
 2. **Decisions that survive.** Important choices become short decision records that are never
    edited, only replaced. The reasons outlive turnover, reorganizations and context windows.
-3. **No allegiance to any tool or model.** It is Markdown and a few conventions. Your team can use
+3. **Architecture diagrams that stay true.** The spec draws the system with the
+   [C4 model](https://c4model.com), the System Context and Container diagrams architects already
+   know how to read, in Mermaid, so they render on GitHub and change in the same commit as the code
+   they describe. No separate drawing tool, and no diagram that went stale a year ago.
+4. **No allegiance to any tool or model.** It is Markdown and a few conventions. Your team can use
    Claude, GPT, Gemini or whatever comes next, side by side, and the spec stays the same.
 
 ## Not just for engineers
