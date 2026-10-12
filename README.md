@@ -4,9 +4,8 @@
 
 ![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
 
-> **Status: beta, in development.** The practice described here is in daily use and you can adopt it
-> today by copying the layout below. The `durablespec` command-line tool (`init`, `index`, `check`) and the
-> agent instructions are being built now and will land in this repo. More at
+> **Status: beta (v0.1).** The practice is in daily use. This repo has the installer, two Agent
+> Skills and the check script; see [Getting started](#getting-started). More at
 > [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
 
 Every AI session starts from zero. You spend the first part of it re-explaining the system, the
@@ -62,7 +61,7 @@ This is the habit that makes it work. It is not obvious, so here it is step by s
 **1. Start with the problem, and have the agent read the spec first.** For example:
 
 > Today we're going to extend billing so it can handle Acme's invoices in euros and pounds.
-> Before we start, read `billing/doc/spec`, and also `storefront/doc/spec` to see how the
+> Before we start, read `doc/spec`, and also the storefront repo's `doc/spec` to see how the
 > storefront uses billing. Then let's brainstorm. I was thinking we could store each amount in its
 > original currency and convert only when reporting. Will that work, and what else would it
 > affect?
@@ -101,7 +100,11 @@ It adds two [Agent Skills](https://agentskills.io), `durablespec-create` and `du
 `.agents/skills/` (read by Codex, Gemini CLI, GitHub Copilot and others) with links in `.claude/skills/`
 for Claude Code. It also adds `doc/spec/durablespec.py` (the mechanical checks), the rules in
 `doc/spec/README.md` if you have none, a marked section in `AGENTS.md`, and an `@AGENTS.md` line in
-`CLAUDE.md`. It never touches anything else, and running it again upgrades in place.
+`CLAUDE.md`. It never touches anything else, and running it again upgrades in place. Add `--dry-run` to see what
+it would do first.
+
+Commit what it adds. On Windows, Git may check out the `.claude/skills/` links as plain text files;
+running the installer again on that machine replaces them with copies.
 
 Then ask your agent to **create the spec**. It works like a session in the previous section: a
 conversation, not a form.
@@ -213,6 +216,13 @@ that describes it. Decision records share one sequence. Monorepos differ too muc
 recipe: one holding several complex, high-throughput modules is a different thing from one that is
 a plain REST application split into folders. Start with one spec for both; if a part later earns
 its own, record that as a decision.
+
+## Alongside other spec tools
+
+Per-change spec tools (GitHub Spec Kit, OpenSpec, Kiro, or a team's own story specs) plan and record
+individual changes. DurableSpec holds the standing picture those changes add up to. They don't
+overlap; keep both. The spec always lives at `doc/spec/`, even in a repo that already has a `docs/`
+folder, so every tool and agent finds it in the same place.
 
 ## Works with any agent
 

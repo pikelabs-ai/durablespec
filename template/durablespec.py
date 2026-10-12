@@ -7,23 +7,31 @@ Lives at doc/spec/durablespec.py and is identical in every repo; no settings. Py
     python3 doc/spec/durablespec.py check     # exit 1 if anything below is wrong
     python3 doc/spec/durablespec.py version
 
-check verifies: every document has front matter with a purpose; INDEX.md is current; every owns:
-path still exists; no two decision records share a number.
+check verifies: every document has front matter with a purpose and no unknown keys; every owns: path is
+inside the repo and still exists; relative links between documents resolve; no two decision records
+share a number; INDEX.md is current. It also notes, without failing, design documents that name no code
+(fine for work not built yet) and top-level folders that no owns: line covers.
+
+Front matter is a small subset of YAML: one line per value; lists either inline [a, b] or as "- item"
+lines; values containing commas belong in the "- item" form.
 """
 import glob
 import os
 import re
 import sys
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
 INDEX = os.path.join(SPEC, "INDEX.md")
 RELATED = os.path.join(SPEC, "RELATED.md")
 SKIP = {"INDEX.md", "RELATED.md"}
-GROUPS = [("purpose", "Purpose"), ("constitution", "Constitution"), ("design", "Design"),
-          ("adr", "Decision records"), ("(root)", "Root")]
+GROUPS = [("(root)", "Start here"), ("purpose", "Purpose"), ("constitution", "Constitution"),
+          ("design", "Design"), ("adr", "Decision records")]
+KEYS = {"purpose", "concepts", "owns"}
+FIRST = ["README.md", "overview.md", "architecture.md"]  # listed first in their group
+NO_OWNS = {"design/architecture.md", "design/status.md"}
 
 
 def _list(value):
@@ -35,9 +43,10 @@ def _list(value):
 
 def parse(path):
     """Return dict(title, purpose, concepts, owns, has_front_matter) for one markdown file."""
-    with open(path, encoding="utf-8") as fh:
-        text = fh.read()
-    doc = {"title": "", "purpose": "", "concepts": [], "owns": [], "has_front_matter": False}
+    with open(path, encoding="utf-8-sig") as fh:  # tolerates a byte-order mark
+        text = fh.read().replace("\r\n", "\n")
+    doc = {"title": "", "purpose": "", "concepts": [], "owns": [], "has_front_matter": False,
+           "unknown": []}
     body = text
     if text.startswith("---\n") and "\n---" in text[4:]:
         end = text.index("\n---", 4)
@@ -53,6 +62,8 @@ def parse(path):
             if not m:
                 continue
             key, value = m.group(1), m.group(2)
+            if key not in KEYS:
+                doc["unknown"].append(key)
             if key == "purpose":
                 doc["purpose"] = value.strip().strip("'\"")
             elif key in ("concepts", "owns"):
@@ -85,8 +96,12 @@ def render(docs):
         groups.setdefault(top, []).append((rel, doc))
     known = [k for k, _ in GROUPS]
     order = GROUPS + [(k, k) for k in sorted(groups) if k not in known]
+    def rank(entry):
+        name = entry[0].rsplit("/", 1)[-1]
+        return (FIRST.index(name) if name in FIRST else len(FIRST), entry[0])
+
     for key, label in order:
-        entries = groups.get(key)
+        entries = sorted(groups.get(key, []), key=rank)
         if not entries:
             continue
         out += ["## " + label, ""]
@@ -104,6 +119,11 @@ def render(docs):
     return "\n".join(out).rstrip() + "\n"
 
 
+def outside_repo(pattern):
+    full = os.path.normpath(os.path.join(REPO, pattern))
+    return os.path.isabs(pattern) or not (full + os.sep).startswith(REPO + os.sep) and full != REPO
+
+
 def owned_path_exists(pattern):
     full = os.path.join(REPO, pattern)
     if any(ch in pattern for ch in "*?["):
@@ -111,15 +131,54 @@ def owned_path_exists(pattern):
     return os.path.exists(full)
 
 
+LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+NOT_CODE = {"doc", "docs", "node_modules", "target", "build", "dist", "out", "venv"}
+
+
+def broken_links(rel):
+    with open(os.path.join(SPEC, rel), encoding="utf-8-sig") as fh:
+        text = re.sub(r"```.*?```", "", fh.read(), flags=re.S)
+    bad = []
+    for target in LINK.findall(text):
+        if re.match(r"^[a-z]+:", target) or target.startswith("#"):
+            continue
+        path = target.split("#", 1)[0]
+        if path and not os.path.exists(os.path.normpath(os.path.join(SPEC, os.path.dirname(rel), path))):
+            bad.append(target)
+    return bad
+
+
+def uncovered_folders(docs):
+    owned = [o.rstrip("/").split("/", 1)[0] for _, d in docs for o in d["owns"]]
+    try:
+        tops = sorted(n for n in os.listdir(REPO) if os.path.isdir(os.path.join(REPO, n))
+                      and not n.startswith(".") and n not in NOT_CODE)
+    except OSError:
+        return []
+    return [t for t in tops if t not in owned]
+
+
 def check(docs):
-    problems = []
+    problems, notes = [], []
+    for rel, _ in docs:
+        for target in broken_links(rel):
+            problems.append("{}: link to '{}' does not resolve".format(rel, target))
+    if any(d["owns"] for _, d in docs):
+        for folder in uncovered_folders(docs):
+            notes.append("top-level folder '{}/' is not covered by any owns: line".format(folder))
     for rel, doc in docs:
         if not doc["has_front_matter"]:
             problems.append("{}: no front matter (needs at least a purpose line)".format(rel))
         elif not doc["purpose"]:
             problems.append("{}: front matter has no purpose".format(rel))
+        for key in doc["unknown"]:
+            problems.append("{}: unknown front-matter key '{}' (expected purpose, concepts, owns)".format(rel, key))
+        if rel.startswith("design/") and rel not in NO_OWNS and doc["has_front_matter"] and not doc["owns"]:
+            notes.append("{}: names no code (owns:); fine if it describes work not built yet".format(rel))
         for pattern in doc["owns"]:
-            if not owned_path_exists(pattern):
+            if outside_repo(pattern):
+                problems.append("{}: owns '{}', which is outside the repo".format(rel, pattern))
+            elif not owned_path_exists(pattern):
                 problems.append("{}: owns '{}', which no longer exists".format(rel, pattern))
     numbers = {}
     for rel, _ in docs:
@@ -132,7 +191,7 @@ def check(docs):
     current = open(INDEX, encoding="utf-8").read() if os.path.exists(INDEX) else None
     if current != render(docs):
         problems.append("INDEX.md is out of date: run python3 doc/spec/durablespec.py index")
-    return problems
+    return problems, notes
 
 
 def main(argv):
@@ -147,9 +206,11 @@ def main(argv):
         print("wrote doc/spec/INDEX.md ({} documents)".format(len(docs)))
         return 0
     if command == "check":
-        problems = check(docs)
+        problems, notes = check(docs)
         for p in problems:
-            print("  " + p)
+            print("  problem: " + p)
+        for n in notes:
+            print("  note:    " + n)
         print("durablespec {}: {} documents, {}".format(
             VERSION, len(docs), "no problems" if not problems else "{} problem(s)".format(len(problems))))
         return 1 if problems else 0

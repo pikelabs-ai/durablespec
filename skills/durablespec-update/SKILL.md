@@ -4,7 +4,7 @@ description: Keep doc/spec accurate after a change. Use before a commit, when wr
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # durablespec-update
@@ -27,8 +27,9 @@ changes don't move the picture, and needless edits are the failure this skill ex
 3. **If yes, find the one document that owns each part of it** (table in `doc/spec/README.md`):
    - overall shape → `design/architecture.md`
    - inside one area → that area's document, found by matching changed paths against `owns:` lines
-   - a load-bearing choice → a new `adr/NNNN-short-title.md`, next free number. Never edit a decided
-     record; write a new one that replaces it and names the one it replaces.
+   - a load-bearing choice → a new `adr/NNNN-short-title.md`, next free number, in the format in
+     `doc/spec/README.md`. Never edit a decided record; write a new one that says what it replaces, and
+     change only the old one's status line to "replaced by ADR-NNNN".
    - a convention → `constitution/`; a term → `purpose/glossary.md`
    - build progress → `design/status.md`; deferred work → `backlog.md`
 
@@ -41,5 +42,5 @@ changes don't move the picture, and needless edits are the failure this skill ex
    `python3 doc/spec/durablespec.py check`, and fix anything check reports.
 
 6. **Report.** List each file changed with one line on why, or say plainly that no spec change was
-   warranted and why. "Nothing needs to change" is a common, correct result. Suggest `[skip-spec]` in the
-   commit message when nothing changed, so the decision is recorded.
+   warranted and why. "Nothing needs to change" is a common, correct result. Teams that want a record of
+   that decision put `[skip-spec]` in the commit message; it's a convention, nothing enforces it.

@@ -61,7 +61,8 @@ def main(argv):
                 os.symlink(target, link)
             except OSError:  # e.g. Windows without symlink rights: fall back to a copy
                 shutil.copytree(dst, link)
-        do("link " + os.path.relpath(link, repo) + " -> " + target, make_link)
+        kind = "replace copy at " if os.path.isdir(link) and not os.path.islink(link) else "link "
+        do(kind + os.path.relpath(link, repo) + " -> " + target, make_link)
 
     spec = os.path.join(repo, "doc", "spec")
     tool = os.path.join(spec, "durablespec.py")
@@ -102,7 +103,11 @@ def main(argv):
     print(("Would do" if dry else "Done") + " in " + repo + ":")
     for a in actions:
         print("  " + a)
+    if os.path.isdir(os.path.join(repo, "docs")):
+        print("Note: this repo also has docs/. DurableSpec always uses doc/spec/ so every agent finds it in "
+              "the same place; docs/ is left as it is.")
     if not dry:
+        print("Commit: AGENTS.md, CLAUDE.md, .agents/skills/, .claude/skills/ and doc/spec/.")
         print("Next: ask your agent to create the spec (durablespec-create), or, if doc/spec already has "
               "documents, run: python3 doc/spec/durablespec.py index && python3 doc/spec/durablespec.py check")
     return 0
