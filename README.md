@@ -213,10 +213,12 @@ conflict in front of the people who made them.
 
 ## Large repos
 
-In a monorepo, give each major part its own `doc/spec/`, and keep one at the root that describes
-how the parts fit together and points to each part's spec. Decision records are numbered within
-each part and cited with the part's name from elsewhere, the same as across repos. `onespec index`
-at the root finds the nested specs and lists them.
+A monorepo gets one spec, at the root, like any other repo. Each part is an area in `design/`,
+and its `owns:` line names the part's folders, so a change anywhere still traces to the document
+that describes it. Decision records share one sequence. Monorepos differ too much for a fixed
+recipe: one holding several complex, high-throughput modules is a different thing from one that is
+a plain REST application split into folders. Start with one spec for both; if a part later earns
+its own, record that as a decision.
 
 ## Works with any agent
 
