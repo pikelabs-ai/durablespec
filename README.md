@@ -2,11 +2,33 @@
 
 **One shared spec for your team and every AI it works with.**
 
+A free, open-source spec that gives every engineer and every AI session the same context, draws and
+maintains your C4 architecture diagrams, and builds a lasting product specification, in plain Markdown
+next to your code.
+
+- **Shared context across people and AI sessions.** What one person's session works out, every later
+  session knows, whoever runs it. Nobody re-explains the system.
+- **Architecture diagrams that maintain themselves.** C4 Context and Container diagrams in Mermaid,
+  drawn from your code and redrawn in the commit that changes them.
+- **A product spec that lasts.** Purpose, customers, business rules and the decisions behind the
+  design: the context that isn't in the code, in plain language product owners can read and write.
+- **Drift gets caught.** Each document names the code it describes, so a stale document is flagged.
+- **Free and simple.** Plain Markdown, two Agent Skills and one Python script. Works with Claude Code,
+  Codex, Copilot, Cursor and Gemini CLI.
+
+Try it on any repository (you need git and Python 3.8+), then ask your agent to "create the spec":
+
+```
+git clone https://github.com/pikelabs-ai/durablespec.git
+python3 durablespec/install.py /path/to/your/repo
+```
+
 ![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
 
-> **Status: beta (v0.3).** The practice is in daily use. This repo has the installer, two Agent
-> Skills and the check script; see [Getting started](#getting-started). More at
-> [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
+> **Status: beta (v0.3).** The practice is in daily use across nine repositories; the packaging is new.
+> More at [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
+
+## Why
 
 Every AI session starts from zero. You spend the first part of it re-explaining the system, the
 customer, and what was decided last week, and when the session ends, what you worked out together
@@ -19,11 +41,7 @@ session, human or AI, starts by reading it, and the work that matters gets writt
 session ends. The knowledge carries forward from one session to the next, and from one person to
 the next.
 
----
-
-## Why
-
-**Continuity beyond the session.** This is the main point.
+**Continuity beyond the session** is the main point.
 
 - **Working alone,** a new session starts at full speed. The agent reads a few pages instead of
   re-deriving the system from the code, so it uses little of its context window getting oriented
@@ -31,19 +49,6 @@ the next.
 - **Working as a team,** the spec carries everyone's relevant work. When a colleague's session
   settled a design question yesterday, your session knows the answer today, without anyone
   writing a hand-off note or remembering to mention it.
-
-Four more benefits come with it:
-
-1. **One picture of the system for people and agents alike.** A new engineer, a product owner, or
-   a fresh AI session gets oriented from the same few documents in minutes.
-2. **Decisions that survive.** Important choices become short decision records that are never
-   edited, only replaced. The reasons outlive turnover, reorganizations and context windows.
-3. **Architecture diagrams that stay true.** The spec draws the system with the
-   [C4 model](https://c4model.com), the System Context and Container diagrams architects already
-   know how to read, in Mermaid, so they render on GitHub and change in the same commit as the code
-   they describe. No separate drawing tool, and no diagram that went stale a year ago.
-4. **No allegiance to any tool or model.** It is Markdown and a few conventions. Your team can use
-   Claude, GPT, Gemini or whatever comes next, side by side, and the spec stays the same.
 
 ## Not just for engineers
 
