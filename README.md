@@ -107,6 +107,10 @@ for Claude Code. It also adds `doc/spec/durablespec.py` (the mechanical checks),
 `CLAUDE.md`. It never touches anything else, and running it again upgrades in place. Add `--dry-run` to see what
 it would do first.
 
+`main` is the latest code; to install a specific release, add `--branch v0.3.3` (or any release tag)
+to the clone. Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
+([Upgrading](#upgrading-and-stopping)).
+
 Commit what it adds. On Windows, Git may check out the `.claude/skills/` links as plain text files;
 running the installer again on that machine replaces them with copies.
 
@@ -157,13 +161,37 @@ A few conventions carry most of the weight:
   the document that describes it, and a document pointing at deleted code gets caught.
 - **Build status lives in one place,** `design/status.md`. Status notes scattered through design
   documents are the first thing to go stale.
-- **Diagrams follow the [C4 model](https://c4model.com), drawn in Mermaid:** a System Context
-  diagram in the overview, a Container diagram in the architecture, and Component diagrams only
-  where an area needs one. They render on GitHub and stay plain text. The skills draw them once
-  there is enough to show.
+- **Diagrams follow the C4 model, drawn in Mermaid** (see [Architecture that stays true](#architecture-that-stays-true)).
 - **Decision records are never edited.** To change a decision, write a new record that replaces
   the old one. When you cite a record from another repo, name the repo: `billing ADR-0004`, never
   a bare number.
+
+## Architecture that stays true
+
+The spec draws your system with the [C4 model](https://c4model.com): a System Context diagram in the
+overview (who uses it, what it talks to), a Container diagram in the architecture (the running parts and
+how they connect), and Component diagrams for areas complex enough to need one. They are Mermaid, so
+GitHub shows them as pictures and they live as plain text beside the code:
+
+```mermaid
+flowchart LR
+  clerk["<b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"]
+  subgraph billing["Billing (this system)"]
+    app["<b>Web app</b><br/>[Container: React]<br/>Invoice screens"]
+    api["<b>API</b><br/>[Container: Java]<br/>Prices and sends invoices"]
+    db[("<b>Database</b><br/>[Container: PostgreSQL]<br/>Amounts in original currency")]
+  end
+  bank["<b>Bank</b><br/>[External system]<br/>Daily exchange rates"]
+  clerk -- "uses" --> app
+  app -- "JSON over HTTPS" --> api
+  api -- "reads and writes" --> db
+  api -- "fetches rates" --> bank
+```
+
+The agent draws them when it creates the spec. On every change, it checks whether an app, service,
+database, user or outside system was added, removed or reconnected, even when the change only touched a
+compose or Terraform file, and if so redraws the picture in the same commit. This repo's own
+[architecture](doc/spec/design/architecture.md) is a worked example.
 
 ## The one rule
 
@@ -241,7 +269,8 @@ Nothing is written twice.
 
 ## Upgrading, and stopping
 
-From the repo you want to upgrade:
+From the repo you want to upgrade (repos on 0.3.2 or later; for older ones, run the installer once from a
+fresh clone):
 
 ```
 python3 doc/spec/durablespec.py upgrade            # add --dry-run to see what it would change
