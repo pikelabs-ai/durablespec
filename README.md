@@ -25,7 +25,8 @@ python3 durablespec/install.py /path/to/your/repo
 
 ![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
 
-> **Status: beta (v0.3).** The practice is in daily use across nine repositories; the packaging is new.
+> **Status: beta.** The practice is in daily use across nine repositories; the packaging is new. Every
+> release is [tagged](https://github.com/pikelabs-ai/durablespec/tags).
 > More at [pikelabs.ai/durablespec](https://pikelabs.ai/durablespec).
 
 ## Why
@@ -112,8 +113,8 @@ for Claude Code. It also adds `doc/spec/durablespec.py` (the mechanical checks),
 `CLAUDE.md`. It never touches anything else, and running it again upgrades in place. Add `--dry-run` to see what
 it would do first.
 
-`main` is the latest code; to install a specific release, add `--branch v0.3.3` (or any release tag)
-to the clone. Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
+`main` is the latest code; to install a specific release, add `--branch` and a [release tag](https://github.com/pikelabs-ai/durablespec/tags)
+to the clone (for example `--branch v0.3.3`). Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
 ([Upgrading](#upgrading-and-stopping)).
 
 Commit what it adds. On Windows, Git may check out the `.claude/skills/` links as plain text files;
