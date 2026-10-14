@@ -81,6 +81,9 @@ When a change does qualify, move the **one** document that owns it:
   - **Component** in an area document, only when its insides are complex enough to need a picture.
   - **Never code level.** The code is the authority on that.
 
+  Draw as many of these as make sense for what this repo holds, and keep them current. Parts that live
+  in other repos appear as single outside boxes; their own specs draw their insides.
+
   Use Mermaid flowcharts in C4 style rather than Mermaid's experimental C4 syntax, whose layout is poor:
   each box gives a name, its type in brackets and one line on what it does; every arrow says what flows;
   a subgraph marks the system boundary.

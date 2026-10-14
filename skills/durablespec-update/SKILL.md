@@ -4,7 +4,7 @@ description: Keep doc/spec accurate after a change. Use before a commit, when wr
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # durablespec-update
@@ -28,6 +28,13 @@ step 5, then run the index and check.
    and dependency bumps almost never qualify. New components, changed boundaries, new or reversed
    load-bearing decisions and new conventions usually do.
 
+   Whatever the answer, always ask one more question, because the files a change touches rarely point
+   at the architecture: **did it add, remove or reconnect a deployable part (an app, service, database,
+   queue, container or job), a kind of user, or an outside system?** Look at compose, Terraform,
+   Kubernetes, Dockerfiles, CI and build files in the diff as well as code. If so, the spec changes:
+   `design/architecture.md` and its Container diagram, and for users and outside systems the overview's
+   System Context diagram, whichever area owns the files.
+
 3. **If yes, find the one document that owns each part of it** (table in `doc/spec/README.md`):
    - overall shape → `design/architecture.md`
    - inside one area → that area's document, found by matching changed paths against `owns:` lines
@@ -48,6 +55,9 @@ step 5, then run the index and check.
    - If a document you are editing now describes three or more parts or outside systems and has no
      diagram, add one, following the diagram convention in `doc/spec/README.md`. The overview gets the
      System Context diagram and `architecture.md` the Container diagram.
+   - If the spec lacks a C4 diagram that makes sense for this repo (Context, Container, or Component for
+     a complex area), add it when you are in that document. Parts in other repos are single outside
+     boxes.
    - Never add a diagram for its own sake, or redraw one that is still true.
 
    If that README predates diagrams, the essentials are: C4 levels (System Context in the overview,
@@ -58,6 +68,8 @@ step 5, then run the index and check.
    Then run `python3 doc/spec/durablespec.py index` and
    `python3 doc/spec/durablespec.py check`, and fix anything check reports.
 
-6. **Report.** List each file changed with one line on why, or say plainly that no spec change was
+6. **Report.** If the change alters something another repo relies on (an API, a message, a setting, a
+   deployed part; `RELATED.md` lists related repos), say so, so the person can update that repo's spec.
+   List each file changed with one line on why, or say plainly that no spec change was
    warranted and why. "Nothing needs to change" is a common, correct result. Teams that want a record of
    that decision put `[skip-spec]` in the commit message; it's a convention, nothing enforces it.

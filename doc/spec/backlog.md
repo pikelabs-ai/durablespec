@@ -27,26 +27,21 @@ concepts: [backlog, todo, open-questions]
   - Large repos need parallel surveying; say how to make sure counts are measured, not copied from old
     documents.
 
-- **The update skill misses architecture changes** (reported by an engineer on a team using it, 2026-10-14: it
-  only updates the architecture when reminded). Three likely causes, three fixes:
-  - **It often doesn't run.** `AGENTS.md` asks for it before committing, but agents commit without
-    loading it; the reminder is what triggers it. Firmer wording in the `AGENTS.md` block, and see the
-    commit hook below.
-  - **Ownership routes around the architecture.** `architecture.md` owns no code, so a new container
-    shows up as an edit to a compose or Terraform file owned by a deployment area, and only that area's
-    document gets updated. Add a question the skill must always answer, whatever owns the files: did
-    this add, remove or reconnect a deployable part, a user or an outside system? If so,
-    `architecture.md` and its Container diagram change too (and the overview's Context diagram for
-    users and outside systems).
-  - **The bias toward no change** lets a new service inside a larger change through. The same
-    question fixes this.
+- **The update skill often doesn't run** unless someone asks (reported by an engineer on a team using
+  it, 2026-10-14). 0.3.1 made the `AGENTS.md` block firmer and added an always-asked architecture
+  question to the skill. Not done, and not urgent: people should ask for the update as part of their
+  work. Options if it stays a problem:
   - **A mechanical nudge in `check`:** when deployment files (compose, Terraform, Dockerfiles, CI, build
-    files) change and the spec doesn't, print a reminder. Works even when the skill never ran.
-- **An optional commit hook that forces the decision.** A git `commit-msg` hook, installed through a
-  committed hooks folder (`core.hooksPath`), rejects a commit that changes code but neither changes
-  `doc/spec/` nor says `[skip-spec]`, with a message telling the agent to run `durablespec-update`.
-  It works for every agent and for people, needs no AI, and turns "remember to run it" into an
-  explicit yes or no on every commit. Opt-in in the installer, since some teams will find it strict.
+    files) change and the spec doesn't, print a reminder.
+  - **An optional commit hook that forces the decision.** A git `commit-msg` hook, installed through a
+    committed hooks folder (`core.hooksPath`), rejects a commit that changes code but neither changes
+    `doc/spec/` nor says `[skip-spec]`, with a message telling the agent to run `durablespec-update`.
+    It works for every agent and for people, needs no AI, and turns "remember to run it" into an
+    explicit yes or no on every commit. Opt-in in the installer, since some teams will find it strict.
+- **The picture of a system that spans several repos** (an app, its infrastructure, a shared library).
+  Deliberately not solved: each repo draws its own part and shows other repos as single boxes, and
+  people keep related specs in step. An idea if it is needed later: each repo declares what it provides
+  to and uses from other repos, and a script generates the whole-system diagram and reports mismatches.
 
 ## Open questions
 

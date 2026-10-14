@@ -4,7 +4,7 @@ description: Create doc/spec, the spec of record, for a repo that doesn't have o
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # durablespec-create
@@ -49,15 +49,16 @@ index and reads just that. There is no length target. Typically:
    <evidence>". A choice with no recorded reason is described in the design document, not made into a
    decision record. Don't invent reasons.
 
-   Draw the C4 diagrams as the README's diagram convention says, once there is enough to draw. The
-   Container diagram comes from deployment files (compose, Terraform, Kubernetes, Dockerfiles, CI) and
-   entry points; the Context diagram from outside calls, SDKs, sign-in providers and what people tell
-   you. If the repo has older diagrams (ASCII, images, other tools) that are still true, redraw them in
-   Mermaid and link the originals rather than deleting them. If the README predates diagrams, the
-   essentials are: C4 levels (System Context in the overview, Container in `architecture.md`, Component
-   only where an area needs it, never code level), drawn as a Mermaid `flowchart`; each box gives
-   `<b>name</b><br/>[type]<br/>what it does`, every arrow is labeled, and a subgraph marks the system
-   boundary.
+   Draw as many C4 diagrams as make sense for what this repo holds, as the README's diagram convention
+   says: Context and Container once there is enough to draw, and Component for each area complex enough
+   to need one. Parts that live in other repos are single outside boxes. The Container diagram comes from
+   deployment files (compose, Terraform, Kubernetes, Dockerfiles, CI) and entry points; the Context
+   diagram from outside calls, SDKs, sign-in providers and what people tell you. If the repo has older
+   diagrams (ASCII, images, other tools) that are still true, redraw them in Mermaid and link the
+   originals rather than deleting them. If the README predates diagrams, the essentials are: C4 levels
+   (System Context in the overview, Container in `architecture.md`, Component only where an area needs
+   it, never code level), drawn as a Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what
+   it does`, every arrow is labeled, and a subgraph marks the system boundary.
 
 3. **Ask.** List the questions the code can't answer, and ask the people: who it's for, why the odd parts
    are odd, which decisions were deliberate, what is planned. Bring a product owner to the purpose

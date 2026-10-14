@@ -20,7 +20,7 @@ import os
 import re
 import sys
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
