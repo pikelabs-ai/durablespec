@@ -42,6 +42,16 @@ concepts: [backlog, todo, open-questions]
   Deliberately not solved: each repo draws its own part and shows other repos as single boxes, and
   people keep related specs in step. An idea if it is needed later: each repo declares what it provides
   to and uses from other repos, and a script generates the whole-system diagram and reports mismatches.
+- **One-line install, when outside teams start using it.** Install is two commands today, and adoption
+  is held back by the message, not by install friction, so this waits.
+  - **First, a Python package** (the step [ADR-0002](adr/0002-stdlib-python-install-by-copy.md) put off):
+    publish to PyPI with a `durablespec` command (`install`, `upgrade`, `version`), so
+    `uvx durablespec install .` works with nothing installed beforehand, and `pipx install durablespec`
+    gives a lasting command. Covers Mac, Linux and Windows.
+  - **Then a Homebrew tap,** `pikelabs-ai/homebrew-tap`, as a thin wrapper:
+    `brew install pikelabs-ai/tap/durablespec`. Mac and Linux only; each release updates the formula's
+    version and checksum, ideally automatically. Homebrew's main catalog only once the project is well
+    known.
 
 ## Open questions
 
