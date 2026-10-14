@@ -23,7 +23,7 @@ git clone https://github.com/pikelabs-ai/durablespec.git
 python3 durablespec/install.py /path/to/your/repo
 ```
 
-![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](docs/durablespec-hero.jpg)
+![Four people on four days, each adding to one shared spec, so Thursday starts with everything Monday to Wednesday worked out.](doc/durablespec-hero.jpg)
 
 > **Status: beta.** The practice is in daily use across nine repositories; the packaging is new. Every
 > release is [tagged](https://github.com/pikelabs-ai/durablespec/tags).

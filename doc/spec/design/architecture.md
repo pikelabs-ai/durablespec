@@ -52,6 +52,6 @@ user's repo
 After that, DurableSpec has no runtime presence. The user's agent reads `AGENTS.md`, loads a skill when a
 request matches, and the script runs locally, in a git hook or in CI. Nothing calls home.
 
-The repository README is the public introduction; `docs/` holds its image. The product page and the
+The repository README is the public introduction; its image is `doc/durablespec-hero.jpg`. The product page and the
 comparison with other spec tools are on [pikelabs.ai](https://pikelabs.ai/durablespec), maintained in a
 separate website repository.
