@@ -241,8 +241,15 @@ Nothing is written twice.
 
 ## Upgrading, and stopping
 
-Pull this repo and run the installer again. `python3 doc/spec/durablespec.py version` shows which
-version a repo has.
+From the repo you want to upgrade:
+
+```
+python3 doc/spec/durablespec.py upgrade            # add --dry-run to see what it would change
+```
+
+It finds the newest release with git, fetches it, and runs its installer against your repo, printing
+anything new that it can't apply by itself. `python3 doc/spec/durablespec.py version` shows which
+version a repo has. Running the installer from a fresh clone of this repo does the same thing.
 
 To stop using DurableSpec, delete `doc/spec/`, the two skills, and the marked section of
 `AGENTS.md`. Nothing else depends on it.

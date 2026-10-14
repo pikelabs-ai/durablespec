@@ -18,6 +18,10 @@ hand between repos and each copy hard-coded its own paths.
   another; or if `INDEX.md` is stale. It also prints notes, without failing, for design documents that
   own nothing and top-level folders no `owns:` covers.
 - **`version`** prints the version, so a stale copy is easy to spot.
+- **`upgrade`** finds the newest release tag with `git ls-remote`, shallow-clones it into a temporary
+  folder and runs that release's installer against this repo (`--dry-run` passes through). It refuses to
+  run inside this repository. `DURABLESPEC_SOURCE` points it at a mirror
+  ([ADR-0008](../adr/0008-upgrade-from-tagged-releases.md)).
 
 Front matter is a small YAML subset parsed by hand, to stay within the standard library. It needs no AI,
 so it runs where no agent is present: a git hook or CI.

@@ -5,7 +5,7 @@ concepts: [status, version, field-tests, beta]
 
 # Status
 
-As of 2026-10-12. **Version 0.3.1, beta. The repository is public.**
+As of 2026-10-12. **Version 0.3.2, beta. The repository is public.**
 
 **Built:** the two skills, the check script (index, check, version), the installer, the rules template and
 the `AGENTS.md` block. Since 0.3.0 the skills draw C4 diagrams in Mermaid

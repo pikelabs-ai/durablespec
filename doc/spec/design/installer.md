@@ -7,7 +7,8 @@ owns:
 
 # Installer
 
-`python3 install.py /path/to/repo [--dry-run]`, from a clone of this repo. Safe to run again: it
+`python3 install.py /path/to/repo [--dry-run]`, from a clone of this repo, or run for you by
+`durablespec.py upgrade` from a fetched release. Safe to run again: it
 upgrades its own files and touches nothing else.
 
 - **Skills** are copied to `.agents/skills/`, which Codex, Gemini CLI, Copilot and others read. Claude

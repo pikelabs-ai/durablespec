@@ -35,3 +35,4 @@ Read this first. One line per document: what it is for, the ideas it covers, and
 - [ADR-0005: Rename OneSpec to DurableSpec](adr/0005-name-durablespec.md) — Why OneSpec was renamed DurableSpec. · _concepts:_ name, rename, onespec, openspec, marketing
 - [ADR-0006: Manage knowledge, not process](adr/0006-manage-knowledge-not-process.md) — Why DurableSpec manages what the team knows and never prescribes how the work gets done. · _concepts:_ scope, workflow, scaffolding, future-models
 - [ADR-0007: C4 diagrams, drawn in Mermaid](adr/0007-c4-diagrams-in-mermaid.md) — Why spec diagrams follow the C4 model and are drawn in Mermaid. · _concepts:_ diagrams, c4, mermaid, ascii, structurizr
+- [ADR-0008: Upgrade from tagged releases, through the repo's own script](adr/0008-upgrade-from-tagged-releases.md) — Why upgrades fetch tagged releases with git, from a command in the repo's own script. · _concepts:_ upgrade, releases, tags, git, network, packaging

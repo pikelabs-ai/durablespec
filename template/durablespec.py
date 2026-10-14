@@ -6,11 +6,15 @@ Lives at doc/spec/durablespec.py and is identical in every repo; no settings. Py
     python3 doc/spec/durablespec.py index     # rewrite INDEX.md from each document's front matter
     python3 doc/spec/durablespec.py check     # exit 1 if anything below is wrong
     python3 doc/spec/durablespec.py version
+    python3 doc/spec/durablespec.py upgrade   # install the newest release here [--dry-run]
 
 check verifies: every document has front matter with a purpose and no unknown keys; every owns: path is
 inside the repo and still exists; relative links between documents resolve; no two decision records
 share a number; INDEX.md is current. It also notes, without failing, design documents that name no code
 (fine for work not built yet) and top-level folders that no owns: line covers.
+
+upgrade finds the newest release tag (vX.Y.Z) with git, fetches it into a temporary folder, and runs its
+installer against this repo. Set DURABLESPEC_SOURCE to use a mirror instead of GitHub.
 
 Front matter is a small subset of YAML: one line per value; lists either inline [a, b] or as "- item"
 lines; values containing commas belong in the "- item" form.
@@ -18,9 +22,11 @@ lines; values containing commas belong in the "- item" form.
 import glob
 import os
 import re
+import subprocess
 import sys
+import tempfile
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
@@ -194,11 +200,47 @@ def check(docs):
     return problems, notes
 
 
+def _release(text):
+    return tuple(int(n) for n in text.split("."))
+
+
+def upgrade(argv):
+    if os.path.exists(os.path.join(REPO, "install.py")) and os.path.isdir(os.path.join(REPO, "skills", "durablespec-update")):
+        print("this is the DurableSpec repository itself; pull it instead of upgrading it")
+        return 1
+    source = os.environ.get("DURABLESPEC_SOURCE", "https://github.com/pikelabs-ai/durablespec.git")
+    found = subprocess.run(["git", "ls-remote", "--tags", "--refs", source],
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    if found.returncode != 0:
+        print("could not list releases at {}: {}".format(source, found.stderr.strip()))
+        return 1
+    tags = re.findall(r"refs/tags/v(\d+\.\d+\.\d+)$", found.stdout, re.M)
+    if not tags:
+        print("no releases found at " + source)
+        return 1
+    latest = max(tags, key=_release)
+    if _release(latest) <= _release(VERSION):
+        print("durablespec {} is installed; the newest release is {}. Nothing to upgrade.".format(VERSION, latest))
+        return 0
+    print("Upgrading durablespec {} to {} from {}".format(VERSION, latest, source))
+    with tempfile.TemporaryDirectory() as tmp:
+        clone = os.path.join(tmp, "durablespec")
+        fetched = subprocess.run(["git", "clone", "-q", "--depth", "1", "--branch", "v" + latest, source, clone],
+                                 stderr=subprocess.PIPE, universal_newlines=True)
+        if fetched.returncode != 0:
+            print("could not fetch v{}: {}".format(latest, fetched.stderr.strip()))
+            return 1
+        extra = ["--dry-run"] if "--dry-run" in argv else []
+        return subprocess.run([sys.executable, os.path.join(clone, "install.py"), REPO] + extra).returncode
+
+
 def main(argv):
     command = argv[1] if len(argv) > 1 else "check"
     if command == "version":
         print("durablespec", VERSION)
         return 0
+    if command == "upgrade":
+        return upgrade(argv)
     docs = documents()
     if command == "index":
         with open(INDEX, "w", encoding="utf-8") as fh:
