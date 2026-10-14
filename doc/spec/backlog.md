@@ -27,7 +27,7 @@ concepts: [backlog, todo, open-questions]
   - Large repos need parallel surveying; say how to make sure counts are measured, not copied from old
     documents.
 
-- **The update skill misses architecture changes** (reported by a Breezeware engineer, 2026-10-14: it
+- **The update skill misses architecture changes** (reported by an engineer on a team using it, 2026-10-14: it
   only updates the architecture when reminded). Three likely causes, three fixes:
   - **It often doesn't run.** `AGENTS.md` asks for it before committing, but agents commit without
     loading it; the reminder is what triggers it. Firmer wording in the `AGENTS.md` block, and see the
