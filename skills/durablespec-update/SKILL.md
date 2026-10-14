@@ -4,7 +4,7 @@ description: Keep doc/spec accurate after a change. Use before a commit, when wr
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # durablespec-update

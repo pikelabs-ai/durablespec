@@ -4,7 +4,7 @@ description: Create doc/spec, the spec of record, for a repo that doesn't have o
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # durablespec-create

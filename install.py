@@ -121,8 +121,12 @@ def main(argv):
         print("New since your version: " + text)
     if not dry:
         print("Commit: AGENTS.md, CLAUDE.md, .agents/skills/, .claude/skills/ and doc/spec/.")
-        print("Next: ask your agent to create the spec (durablespec-create), or, if doc/spec already has "
-              "documents, run: python3 doc/spec/durablespec.py index && python3 doc/spec/durablespec.py check")
+        has_spec = any(f.endswith(".md") and f not in ("README.md", "INDEX.md")
+                       for _, _, files in os.walk(spec) for f in files)
+        if has_spec:
+            print("Next: python3 doc/spec/durablespec.py index && python3 doc/spec/durablespec.py check")
+        else:
+            print("Next: ask your agent to create the spec (durablespec-create).")
     return 0
 
 

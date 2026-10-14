@@ -26,7 +26,7 @@ import subprocess
 import sys
 import tempfile
 
-VERSION = "0.3.2"
+VERSION = "0.3.3"
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
@@ -222,7 +222,7 @@ def upgrade(argv):
     if _release(latest) <= _release(VERSION):
         print("durablespec {} is installed; the newest release is {}. Nothing to upgrade.".format(VERSION, latest))
         return 0
-    print("Upgrading durablespec {} to {} from {}".format(VERSION, latest, source))
+    print("Upgrading durablespec {} to {} from {}".format(VERSION, latest, source), flush=True)
     with tempfile.TemporaryDirectory() as tmp:
         clone = os.path.join(tmp, "durablespec")
         fetched = subprocess.run(["git", "clone", "-q", "--depth", "1", "--branch", "v" + latest, source, clone],
