@@ -4,7 +4,7 @@ description: Create doc/spec, the spec of record, for a repo that doesn't have o
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # durablespec-create
@@ -58,7 +58,8 @@ index and reads just that. There is no length target. Typically:
    originals rather than deleting them. If the README predates diagrams, the essentials are: C4 levels
    (System Context in the overview, Container in `architecture.md`, Component only where an area needs
    it, never code level), drawn as a Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what
-   it does`, every arrow is labeled, and a subgraph marks the system boundary.
+   it does`, a person is a rounded box headed by a figure (`(["👤<br/><b>name</b><br/>[Person]<br/>..."])`),
+   every arrow is labeled, and a subgraph marks the system boundary.
 
 3. **Ask.** List the questions the code can't answer, and ask the people: who it's for, why the odd parts
    are odd, which decisions were deliberate, what is planned. Bring a product owner to the purpose

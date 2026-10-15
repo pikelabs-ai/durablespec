@@ -114,7 +114,7 @@ for Claude Code. It also adds `doc/spec/durablespec.py` (the mechanical checks),
 it would do first.
 
 `main` is the latest code; to install a specific release, add `--branch` and a [release tag](https://github.com/pikelabs-ai/durablespec/tags)
-to the clone (for example `--branch v0.3.3`). Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
+to the clone (for example `--branch v0.3.4`). Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
 ([Upgrading](#upgrading-and-stopping)).
 
 Commit what it adds. On Windows, Git may check out the `.claude/skills/` links as plain text files;
@@ -181,7 +181,7 @@ GitHub shows them as pictures and they live as plain text beside the code:
 
 ```mermaid
 flowchart LR
-  clerk["<b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"]
+  clerk(["👤<br/><b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"])
   subgraph billing["Billing (this system)"]
     app["<b>Web app</b><br/>[Container: React]<br/>Invoice screens"]
     api["<b>API</b><br/>[Container: Java]<br/>Prices and sends invoices"]

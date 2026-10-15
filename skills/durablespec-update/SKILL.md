@@ -4,7 +4,7 @@ description: Keep doc/spec accurate after a change. Use before a commit, when wr
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # durablespec-update
@@ -62,8 +62,9 @@ step 5, then run the index and check.
 
    If that README predates diagrams, the essentials are: C4 levels (System Context in the overview,
    Container in `architecture.md`, Component only where an area needs it, never code level), drawn as a
-   Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what it does`, every arrow is labeled,
-   and a subgraph marks the system boundary.
+   Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what it does`, a person is a rounded box
+   headed by a figure (`(["👤<br/><b>name</b><br/>[Person]<br/>..."])`), every arrow is labeled, and a
+   subgraph marks the system boundary.
 
    Then run `python3 doc/spec/durablespec.py index` and
    `python3 doc/spec/durablespec.py check`, and fix anything check reports.

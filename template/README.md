@@ -86,10 +86,11 @@ When a change does qualify, move the **one** document that owns it:
 
   Use Mermaid flowcharts in C4 style rather than Mermaid's experimental C4 syntax, whose layout is poor:
   each box gives a name, its type in brackets and one line on what it does; every arrow says what flows;
-  a subgraph marks the system boundary.
+  a subgraph marks the system boundary. A person is a rounded box headed by a 👤 figure, `(["👤<br/>..."])`,
+  so people stand out from systems at a glance.
   ```mermaid
   flowchart LR
-    clerk["<b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"]
+    clerk(["👤<br/><b>Billing clerk</b><br/>[Person]<br/>Issues and corrects invoices"])
     subgraph billing["Billing (this system)"]
       app["<b>Web app</b><br/>[Container: React]<br/>Invoice screens"]
       api["<b>API</b><br/>[Container: Java]<br/>Prices and sends invoices"]

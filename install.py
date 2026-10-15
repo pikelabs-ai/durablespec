@@ -25,6 +25,8 @@ NEWS = [
     ((0, 3, 0), "C4 diagrams in Mermaid. Your spec gains them as documents change; to add them now, ask "
                 "your agent to \"add the C4 diagrams to the spec\". Your doc/spec/README.md was kept; "
                 "the DurableSpec repo's template/README.md has the new diagram section if you want it."),
+    ((0, 3, 4), "People in C4 diagrams are rounded boxes headed by a figure: ([\"👤<br/><b>name</b><br/>"
+                "[Person]<br/>...\"]). Ask your agent to \"update the people in the spec's diagrams\"."),
 ]
 
 

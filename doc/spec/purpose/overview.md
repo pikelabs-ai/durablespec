@@ -21,8 +21,8 @@ from zero. Agents fill the gap by guessing, and the guesses pile up.
 
 ```mermaid
 flowchart LR
-  eng["<b>Engineer</b><br/>[Person]<br/>Runs agent sessions, reviews spec changes"]
-  po["<b>Product owner</b><br/>[Person]<br/>Writes purpose, customers and constraints"]
+  eng(["👤<br/><b>Engineer</b><br/>[Person]<br/>Runs agent sessions, reviews spec changes"])
+  po(["👤<br/><b>Product owner</b><br/>[Person]<br/>Writes purpose, customers and constraints"])
   agent["<b>AI coding agent</b><br/>[External system: Claude Code, Codex, Copilot, Cursor, Gemini CLI]<br/>Does the work in the repo"]
   subgraph repo["A team's repository"]
     ds["<b>DurableSpec</b><br/>[Software system]<br/>The spec of record, its rules, skills and checks"]

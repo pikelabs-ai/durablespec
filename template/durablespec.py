@@ -26,7 +26,7 @@ import subprocess
 import sys
 import tempfile
 
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
