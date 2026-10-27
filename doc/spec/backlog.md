@@ -5,6 +5,27 @@ concepts: [backlog, todo, open-questions]
 
 # Backlog
 
+- **Security hardening, the next phase (0.4).** Nothing started. Where the risk is, most serious first:
+  - **`upgrade` runs code fetched from the network,** trusting the GitHub account and release tags,
+    which can be moved; `DURABLESPEC_SOURCE` can point anywhere. Verify signed tags before running, or
+    pin a commit per release; show what will change; refuse non-HTTPS sources.
+  - **The spec is a standing prompt-injection channel.** Agents read it first and treat it as settled,
+    so a bad edit becomes instructions for every later session. Make it a rule that the spec is
+    knowledge, not commands, and that agents report instruction-like text instead of following it;
+    have `check` flag such text, unexpected URLs and encoded blobs; recommend CODEOWNERS review of
+    `doc/spec/`. Likely an ADR.
+  - **The skills read untrusted text** (code, READMEs, history, deploy files, related repos). Same rule.
+  - **Secrets and sensitive detail in the spec.** The update skill lacks the create skill's
+    never-open-secrets rule. Neither says what stays out of a spec in a public repo: internal host
+    names, IP ranges, cloud account, subscription and tenant ids, customer names. A `check` pass for
+    obvious patterns would back it up.
+  - **The installer writes into other repos:** review for planted symlinks under `.agents/` and
+    `.claude/`, Windows paths, and anything that could touch files it doesn't own.
+  - **`durablespec.py`:** review regexes for catastrophic backtracking and `owns:` paths for traversal.
+  - **Project hygiene:** `SECURITY.md`, private vulnerability reporting, signed release tags, required
+    2FA and branch protection on the organization; PyPI trusted publishing when that comes.
+  - **Messaging,** once the work backs it: no dependencies, no telemetry, no network except an explicit
+    upgrade from signed releases, plain files reviewed like code.
 - **Replay test.** Run past spec-touching and non-spec commits from a long-running repo through
   `durablespec-update`; record whether it would have written and where; compare with what happened. Put
   the results in the README as evidence.
