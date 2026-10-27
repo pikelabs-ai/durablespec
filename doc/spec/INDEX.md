@@ -23,6 +23,7 @@ Read this first. One line per document: what it is for, the ideas it covers, and
 - [Check script](design/check-script.md) — durablespec.py: the index builder and mechanical checks, identical in every repo. · _concepts:_ index, check, front-matter, owns, drift, ci · _owns:_ template/durablespec.py
 - [Installer](design/installer.md) — install.py: adds or upgrades DurableSpec in a repository without touching anything else. · _concepts:_ installer, upgrade, symlink, windows, idempotent · _owns:_ install.py
 - [Rules](design/rules.md) — The rules every user repo gets: the one rule, where things go, and the standing AGENTS.md instruction. · _concepts:_ one-rule, layout, front-matter, adr-format, AGENTS.md, credit · _owns:_ template/README.md, template/AGENTS-block.md
+- [Security](design/security.md) — What DurableSpec trusts, how each part could be abused, and the defense for each. · _concepts:_ security, threat-model, prompt-injection, upgrade, installer, secrets, trust
 - [Skills](design/skills.md) — The two Agent Skills: creating a spec, and keeping it accurate after a change. · _concepts:_ skills, create, update, judgment, agentskills · _owns:_ skills/
 - [Status](design/status.md) — What is built, what is being tested, and what comes next. · _concepts:_ status, version, field-tests, beta
 

@@ -22,5 +22,7 @@ repo. The practice itself has been in daily use since spring 2026.
 measure how often it writes and where; running that replay on a second agent and model; and migrating a
 repo from the older hand-copied script and skill.
 
-**Next:** security hardening, as a 0.4 release with matching messaging (see `backlog.md`). Then feedback
-from the first team using it, and the replay test.
+**In progress:** security hardening for 0.4. The threat model and planned defenses are in
+[security](security.md); the installer now stays inside the repo; the other defenses are not built yet. Then messaging to match.
+
+**Next:** feedback from the first team using it, and the replay test.

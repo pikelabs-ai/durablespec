@@ -30,6 +30,20 @@ NEWS = [
 ]
 
 
+def escapes(repo):
+    """Paths this installer writes or deletes that a symlink would send outside the repo."""
+    real = os.path.realpath(repo)
+    paths = [".agents", ".claude", "doc", "doc/spec", "doc/spec/durablespec.py", "doc/spec/README.md",
+             "AGENTS.md", "CLAUDE.md"]
+    paths += [d + "/skills" for d in (".agents", ".claude")] + [".agents/skills/" + s for s in SKILLS]
+    bad = []
+    for rel in paths:
+        full = os.path.realpath(os.path.join(repo, *rel.split("/")))
+        if full != real and not full.startswith(real + os.sep):
+            bad.append("{} -> {}".format(rel, full))
+    return bad
+
+
 def main(argv):
     args = [a for a in argv[1:] if not a.startswith("--")]
     dry = "--dry-run" in argv
@@ -37,6 +51,13 @@ def main(argv):
         print(__doc__)
         return 2
     repo = os.path.abspath(args[0])
+    bad = escapes(repo)
+    if bad:
+        print("Stopped: these paths in " + repo + " are links that lead outside the repo, so installing "
+              "would write there. Nothing was changed. Remove the links, or check who made them:")
+        for b in bad:
+            print("  " + b)
+        return 1
     actions = []
 
     def do(message, fn=None):
@@ -49,7 +70,9 @@ def main(argv):
         dst = os.path.join(repo, ".agents", "skills", skill)
 
         def copy_skill(src=src, dst=dst):
-            if os.path.exists(dst):
+            if os.path.islink(dst):  # remove the link itself, never what it points to
+                os.remove(dst)
+            elif os.path.exists(dst):
                 shutil.rmtree(dst)
             shutil.copytree(src, dst)
         do(("upgrade " if os.path.exists(dst) else "add ") + os.path.relpath(dst, repo), copy_skill)
@@ -105,7 +128,9 @@ def main(argv):
 
     claude = os.path.join(repo, "CLAUDE.md")
     ctext = open(claude, encoding="utf-8").read() if os.path.exists(claude) else ""
-    if "@AGENTS.md" in ctext:
+    if os.path.exists(claude) and os.path.realpath(claude) == os.path.realpath(agents):
+        actions.append("keep CLAUDE.md (a link to AGENTS.md)")
+    elif "@AGENTS.md" in ctext:
         actions.append("keep CLAUDE.md (already imports AGENTS.md)")
     else:
         newc = "@AGENTS.md\n" + ("\n" + ctext if ctext else "")
