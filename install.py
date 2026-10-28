@@ -36,6 +36,11 @@ NEWS = [
 ]
 
 
+def version_of(path):
+    found = re.search(r'^VERSION = "([0-9.]+)"', open(path, encoding="utf-8").read(), re.M)
+    return tuple(int(n) for n in found.group(1).split(".")) if found else (0,)
+
+
 def escapes(repo):
     """Paths this installer writes or deletes that a symlink would send outside the repo."""
     real = os.path.realpath(repo)
@@ -103,10 +108,8 @@ def main(argv):
 
     spec = os.path.join(repo, "doc", "spec")
     tool = os.path.join(spec, "durablespec.py")
-    old_version = None
-    if os.path.exists(tool):
-        found = re.search(r'^VERSION = "([0-9.]+)"', open(tool, encoding="utf-8").read(), re.M)
-        old_version = tuple(int(n) for n in found.group(1).split(".")) if found else (0,)
+    old_version = version_of(tool) if os.path.exists(tool) else None
+    new_version = version_of(os.path.join(HERE, "template", "durablespec.py"))
     do(("upgrade " if os.path.exists(tool) else "add ") + "doc/spec/durablespec.py",
        lambda: (os.makedirs(spec, exist_ok=True),
                 shutil.copy2(os.path.join(HERE, "template", "durablespec.py"), tool)))
@@ -149,7 +152,8 @@ def main(argv):
     if os.path.isdir(os.path.join(repo, "docs")):
         print("Note: this repo also has docs/. DurableSpec always uses doc/spec/ so every agent finds it in "
               "the same place; docs/ is left as it is.")
-    news = [text for version, text in NEWS if old_version is not None and old_version < version]
+    # Only notes for versions this copy actually brings: unreleased work on main doesn't count yet.
+    news = [text for version, text in NEWS if old_version is not None and old_version < version <= new_version]
     for text in news:
         print("New since your version: " + text)
     if not dry:
