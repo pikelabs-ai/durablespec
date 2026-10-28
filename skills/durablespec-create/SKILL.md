@@ -55,13 +55,15 @@ index and reads just that. There is no length target. Typically:
    says: Context and Container once there is enough to draw, and Component for each area complex enough
    to need one. Parts that live in other repos are single outside boxes. The Container diagram comes from
    deployment files (compose, Terraform, Kubernetes, Dockerfiles, CI) and entry points; the Context
-   diagram from outside calls, SDKs, sign-in providers and what people tell you. If the repo has older
+   diagram from outside calls, SDKs, sign-in providers and what people tell you. `design/architecture.md`
+   opens with a `## Diagrams` section linking every diagram you drew, so a reader sees what exists first. If the repo has older
    diagrams (ASCII, images, other tools) that are still true, redraw them in Mermaid and link the
    originals rather than deleting them. If the README predates diagrams, the essentials are: C4 levels
    (System Context in the overview, Container in `architecture.md`, Component only where an area needs
    it, never code level), drawn as a Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what
    it does`, a person is a rounded box headed by a figure (`(["👤<br/><b>name</b><br/>[Person]<br/>..."])`),
-   every arrow is labeled, and a subgraph marks the system boundary.
+   every arrow is labeled, and a subgraph marks the system boundary. Each diagram sits under its own
+   heading and is listed, with a link, in a `## Diagrams` section at the top of `design/architecture.md`.
 
 3. **Ask.** List the questions the code can't answer, and ask the people: who it's for, why the odd parts
    are odd, which decisions were deliberate, what is planned. Bring a product owner to the purpose

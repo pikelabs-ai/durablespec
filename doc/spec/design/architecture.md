@@ -5,6 +5,13 @@ concepts: [architecture, skills, script, installer, rules, AGENTS.md]
 
 # Architecture
 
+## Diagrams
+
+- [System context](../purpose/overview.md#context): who uses DurableSpec and what it works with.
+- [Containers](#containers): the installer, and what it puts in a team's repository.
+
+## Containers
+
 DurableSpec does three kinds of work, and each lives where it fits
 ([ADR-0001](../adr/0001-three-homes-skills-script-agents-md.md)):
 

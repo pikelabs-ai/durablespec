@@ -19,8 +19,9 @@ to, so it is the most important text in the project. It holds:
 - **Conventions:** front matter (`purpose`, `concepts`, `owns`), the decision-record format, never
   editing a decided record, build status only in `design/status.md`, length guidance, one spec per repo
   ([ADR-0003](../adr/0003-one-spec-per-repo.md)), always at `doc/spec/`
-  ([ADR-0004](../adr/0004-folder-stays-doc-spec.md)), and C4 diagrams in Mermaid
-  ([ADR-0007](../adr/0007-c4-diagrams-in-mermaid.md)).
+  ([ADR-0004](../adr/0004-folder-stays-doc-spec.md)), C4 diagrams in Mermaid
+  ([ADR-0007](../adr/0007-c4-diagrams-in-mermaid.md)), and `architecture.md` as the hub that lists them
+  ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)).
 - **A credit line** pointing back to this repository, so anyone who opens a spec can find where it came
   from without the tool's name in the path.
 

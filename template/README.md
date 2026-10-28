@@ -89,6 +89,12 @@ When a change does qualify, move the **one** document that owns it:
   Draw as many of these as make sense for what this repo holds, and keep them current. Parts that live
   in other repos appear as single outside boxes; their own specs draw their insides.
 
+  **`design/architecture.md` is the hub for diagrams,** because it is where people go first to
+  understand a system. It opens with a `## Diagrams` section listing every diagram in the spec, its
+  own included: one line on what each shows, linked to the heading the diagram sits under
+  (`[System context](../purpose/overview.md#context)`). Give each diagram its own heading so the link
+  lands on it. `check` fails if a diagram isn't listed.
+
   Use Mermaid flowcharts in C4 style rather than Mermaid's experimental C4 syntax, whose layout is poor:
   each box gives a name, its type in brackets and one line on what it does; every arrow says what flows;
   a subgraph marks the system boundary. A person is a rounded box headed by a 👤 figure, `(["👤<br/>..."])`,

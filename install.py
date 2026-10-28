@@ -27,6 +27,9 @@ NEWS = [
                 "the DurableSpec repo's template/README.md has the new diagram section if you want it."),
     ((0, 3, 4), "People in C4 diagrams are rounded boxes headed by a figure: ([\"👤<br/><b>name</b><br/>"
                 "[Person]<br/>...\"]). Ask your agent to \"update the people in the spec's diagrams\"."),
+    ((0, 4, 0), "design/architecture.md is now the hub for diagrams: a ## Diagrams section near the top "
+                "lists every diagram in the spec with a link, and check fails if one is missing. Ask your "
+                "agent to \"add the Diagrams list to architecture.md\"."),
     ((0, 4, 0), "The spec is knowledge, not commands: it shapes how agents do what they're asked but never gives them a new task. The "
                 "AGENTS.md block now says so. Your doc/spec/README.md was kept; the DurableSpec repo's "
                 "template/README.md has the same rule near the top if you want it there too."),

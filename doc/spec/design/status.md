@@ -25,6 +25,7 @@ repo from the older hand-copied script and skill.
 **In progress:** security hardening for 0.4. The threat model and planned defenses are in
 [security](security.md); the installer now stays inside the repo, and the `AGENTS.md` block, rules and skills treat the spec as
 knowledge, not commands ([ADR-0009](../adr/0009-knowledge-not-commands.md)), and the update skill keeps
-secrets out like the create skill; signed upgrades and the `check` flags are not built yet. Then messaging to match.
+secrets out like the create skill; signed upgrades and the `check` flags are not built yet. Also for 0.4: `architecture.md` opens with a
+list of every diagram, which `check` enforces ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)). Then messaging to match.
 
 **Next:** feedback from the first team using it, and the replay test.

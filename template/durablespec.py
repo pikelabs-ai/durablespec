@@ -143,7 +143,7 @@ NOT_CODE = {"doc", "docs", "node_modules", "target", "build", "dist", "out", "ve
 
 def broken_links(rel):
     with open(os.path.join(SPEC, rel), encoding="utf-8-sig") as fh:
-        text = re.sub(r"```.*?```", "", fh.read(), flags=re.S)
+        text = re.sub(r"`[^`\n]*`", "", re.sub(r"```.*?```", "", fh.read(), flags=re.S))
     bad = []
     for target in LINK.findall(text):
         if re.match(r"^[a-z]+:", target) or target.startswith("#"):
@@ -152,6 +152,58 @@ def broken_links(rel):
         if path and not os.path.exists(os.path.normpath(os.path.join(SPEC, os.path.dirname(rel), path))):
             bad.append(target)
     return bad
+
+
+ARCH = "design/architecture.md"
+
+
+def slug(heading):
+    """The anchor GitHub and GitLab give a heading."""
+    return re.sub(r"[^\w\- ]", "", heading.strip().lower()).replace(" ", "-")
+
+
+def diagrams(rel):
+    """The anchor of the heading above each Mermaid diagram in one document ('' if none)."""
+    with open(os.path.join(SPEC, rel), encoding="utf-8-sig") as fh:
+        lines = fh.read().split("\n")
+    found, heading, seen, fence = [], "", {}, None
+    for line in lines:
+        m = re.match(r"^\s*```(\w*)", line)
+        if m:
+            if fence is None:
+                fence = m.group(1) or "text"
+                if fence == "mermaid":
+                    found.append(heading)
+            else:
+                fence = None
+            continue
+        h = re.match(r"^#{1,6}\s+(.+?)\s*$", line) if fence is None else None
+        if h:
+            base = slug(h.group(1))
+            heading = base + ("-{}".format(seen[base]) if base in seen else "")
+            seen[base] = seen.get(base, 0) + 1
+    return found
+
+
+def unlisted_diagrams(docs):
+    """Diagrams that design/architecture.md, the hub, doesn't link to."""
+    with open(os.path.join(SPEC, ARCH), encoding="utf-8-sig") as fh:
+        text = re.sub(r"`[^`\n]*`", "", re.sub(r"```.*?```", "", fh.read(), flags=re.S))
+    links = set()
+    for target in LINK.findall(text):
+        if re.match(r"^[a-z]+:", target):
+            continue
+        path, _, anchor = target.partition("#")
+        rel = os.path.normpath(os.path.join("design", path)).replace(os.sep, "/") if path else ARCH
+        links.add((rel, anchor))
+    missing = []
+    for rel, _ in docs:
+        if rel == "README.md":  # the rules: its diagram is an example
+            continue
+        for anchor in diagrams(rel):
+            if (rel, anchor) not in links and not (anchor == "" and any(r == rel for r, _ in links)):
+                missing.append((rel, anchor))
+    return missing
 
 
 def uncovered_folders(docs):
@@ -169,6 +221,12 @@ def check(docs):
     for rel, _ in docs:
         for target in broken_links(rel):
             problems.append("{}: link to '{}' does not resolve".format(rel, target))
+    if any(rel == ARCH for rel, _ in docs):
+        for rel, anchor in unlisted_diagrams(docs):
+            problems.append("{}: diagram{} is not listed in {}'s Diagrams section".format(
+                rel, " under #" + anchor if anchor else "", ARCH))
+    elif any(diagrams(rel) for rel, _ in docs if rel != "README.md"):
+        notes.append("the spec has diagrams but no {} to list them".format(ARCH))
     if any(d["owns"] for _, d in docs):
         for folder in uncovered_folders(docs):
             notes.append("top-level folder '{}/' is not covered by any owns: line".format(folder))

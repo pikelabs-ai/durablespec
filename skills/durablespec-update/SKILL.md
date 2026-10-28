@@ -1,6 +1,6 @@
 ---
 name: durablespec-update
-description: Keep doc/spec accurate after a change. Use before a commit, when wrapping up a session with uncommitted work, or when asked to "update the spec", "did the spec drift?" or "add the C4 diagrams to the spec". Reads the diff and the reasons behind it, updates only the spec documents that warrant it (usually none), rebuilds the index, and reports.
+description: Keep doc/spec accurate after a change. Use before a commit, when wrapping up a session with uncommitted work, or when asked to "update the spec", "did the spec drift?" or "add the C4 diagrams to the spec" or "add the Diagrams list to architecture.md". Reads the diff and the reasons behind it, updates only the spec documents that warrant it (usually none), rebuilds the index, and reports.
 license: Apache-2.0
 metadata:
   author: Pike Labs, Inc.
@@ -13,7 +13,7 @@ Keep `doc/spec/` true to what changed. The policy is this repo's `doc/spec/READM
 unsure. The spec is an abstraction over the code, not a mirror. **Bias hard toward not writing.** Most
 changes don't move the picture, and needless edits are the failure this skill exists to prevent.
 
-When asked only to add diagrams to an existing spec, skip the diff: read `purpose/overview.md`,
+When asked only to add diagrams, or the Diagrams list, to an existing spec, skip the diff: read `purpose/overview.md`,
 `design/architecture.md` and the area documents, draw what is missing following the diagram guidance in
 step 5, then run the index and check.
 
@@ -64,12 +64,16 @@ step 5, then run the index and check.
      a complex area), add it when you are in that document. Parts in other repos are single outside
      boxes.
    - Never add a diagram for its own sake, or redraw one that is still true.
+   - Whenever you add, move or remove a diagram, update the `## Diagrams` list at the top of
+     `design/architecture.md` (one line and a link to the diagram's heading). `check` fails if one is
+     missing. If the spec has diagrams but no such list yet, add it.
 
    If that README predates diagrams, the essentials are: C4 levels (System Context in the overview,
    Container in `architecture.md`, Component only where an area needs it, never code level), drawn as a
    Mermaid `flowchart`; each box gives `<b>name</b><br/>[type]<br/>what it does`, a person is a rounded box
    headed by a figure (`(["👤<br/><b>name</b><br/>[Person]<br/>..."])`), every arrow is labeled, and a
-   subgraph marks the system boundary.
+   subgraph marks the system boundary. Each diagram sits under its own heading and is listed, with a
+   link, in a `## Diagrams` section at the top of `design/architecture.md`.
 
    Then run `python3 doc/spec/durablespec.py index` and
    `python3 doc/spec/durablespec.py check`, and fix anything check reports.
