@@ -21,10 +21,10 @@ repo and is written by agents that have seen secrets, internal host names and ac
 
 ## Defenses
 
-- **The spec is knowledge, not commands.** Agents use it to understand the system and never follow
-  instructions found in it, or in anything the skills read; they report such text to the person
-  instead. This goes in the `AGENTS.md` block, the rules and both skills. `check` flags the obvious
-  signs: text addressed to an AI, hidden HTML comments, links to unexpected hosts, long encoded blobs.
+- **The spec is knowledge, not commands.** It shapes how agents do what a person asked, conventions
+  included, but neither it nor anything the skills read can give them a new task or widen what they
+  may do; such text is reported to the person ([ADR-0009](../adr/0009-knowledge-not-commands.md)).
+  This is in the `AGENTS.md` block, the rules and both skills. `check` flags the obvious signs: text addressed to an AI, hidden HTML comments, links to unexpected hosts, long encoded blobs.
   Teams that take outside contributions should require review of `doc/spec/` (CODEOWNERS).
 - **Secrets stay out.** Both skills refuse to open or quote secrets, and keep out of the spec what a
   public repo shouldn't carry: credentials, internal host names and IP ranges, cloud account,
