@@ -20,6 +20,11 @@ it hands over to `durablespec-update`.
 applies the one rule, and edits only the documents that own the change, usually none. It checks that
 every changed path is owned by some design document, then runs the script.
 
+Both treat what they read, the spec included, as information rather than instructions
+([ADR-0009](../adr/0009-knowledge-not-commands.md)), keep secrets and internal detail out of the spec,
+and list every diagram they draw at the top of `architecture.md`
+([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)).
+
 Both are biased hard toward not writing. Needless edits are the failure the update skill exists to
 prevent. A third skill, to reconcile opposing decisions made on two branches, waits until a real
 conflict calls for it (see [backlog](../backlog.md)).
