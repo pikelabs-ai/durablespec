@@ -5,7 +5,7 @@ concepts: [backlog, todo, open-questions]
 
 # Backlog
 
-- **Security hardening (0.4).** The defenses in [security](design/security.md), in this order:
+- **Security hardening, continued (0.5).** The defenses in [security](design/security.md), in this order:
   signed-release upgrades; `check` flags for injection-like text and
   secrets; script boundary and regex review.
   - **Project hygiene:** `SECURITY.md`, private vulnerability reporting, signed release tags, required
