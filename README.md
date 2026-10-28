@@ -114,7 +114,7 @@ for Claude Code. It also adds `doc/spec/durablespec.py` (the mechanical checks),
 it would do first.
 
 `main` is the latest code; to install a specific release, add `--branch` and a [release tag](https://github.com/pikelabs-ai/durablespec/tags)
-to the clone (for example `--branch v0.4.0`). Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
+to the clone (for example `--branch v0.5.0`). Later, upgrade from inside your repo with `python3 doc/spec/durablespec.py upgrade`
 ([Upgrading](#upgrading-and-stopping)).
 
 Commit what it adds. On Windows, Git may check out the `.claude/skills/` links as plain text files;
@@ -235,8 +235,9 @@ two documents that should move or tells you nothing needs to change. "Nothing ne
 common, correct answer. Put `[skip-spec]` in the commit message to record that.
 
 **The mechanical checks need no AI.** `doc/spec/durablespec.py` checks that every document has its
-opening lines, `INDEX.md` is current, every `owns:` path still exists, and no two decision records
-share a number. Run it locally, in a git hook, or in CI.
+opening lines, `INDEX.md` is current, every `owns:` path still exists, every diagram is listed at the
+top of `architecture.md`, no two decision records share a number, and nothing looks like a secret. Run
+it locally, in a git hook, or in CI.
 
 ```
 python3 doc/spec/durablespec.py index     # rebuild INDEX.md
@@ -282,12 +283,30 @@ fresh clone):
 python3 doc/spec/durablespec.py upgrade            # add --dry-run to see what it would change
 ```
 
-It finds the newest release with git, fetches it, and runs its installer against your repo, printing
-anything new that it can't apply by itself. `python3 doc/spec/durablespec.py version` shows which
+It finds the newest release with git, fetches it, checks that the release is signed by a DurableSpec
+release key, and only then runs its installer against your repo, printing anything new that it can't
+apply by itself. `python3 doc/spec/durablespec.py version` shows which
 version a repo has. Running the installer from a fresh clone of this repo does the same thing.
 
 To stop using DurableSpec, delete `doc/spec/`, the two skills, and the marked section of
 `AGENTS.md`. Nothing else depends on it.
+
+## Security
+
+DurableSpec is plain files that agents read before they act, so it is built to be safe to put in front
+of them:
+
+- **No dependencies, no telemetry, no network** except an upgrade you run, and that runs only releases
+  signed by a DurableSpec release key.
+- **The spec is knowledge, not commands.** It shapes how an agent does what you asked; it can't give it
+  a new task or widen what it may do. Anything in the spec, or in code and docs the skills read, that
+  tries to is reported to you instead.
+- **Secrets stay out.** The skills never open or quote them, and `check` fails on anything shaped like a
+  key or token. It also notes hidden comments, encoded blobs, private IP addresses and cloud account
+  ids; `check --strict` fails on those for CI.
+- **The installer writes only its own files,** and refuses to follow links out of your repo.
+
+See [SECURITY.md](SECURITY.md) to report a problem.
 
 ## Status
 

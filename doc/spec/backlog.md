@@ -5,14 +5,9 @@ concepts: [backlog, todo, open-questions]
 
 # Backlog
 
-- **Security hardening, continued (0.5).** The defenses in [security](design/security.md), in this order:
-  signed-release upgrades; `check` flags for injection-like text and
-  secrets; script boundary and regex review.
-  - **Project hygiene:** `SECURITY.md`, private vulnerability reporting, signed release tags, required
-    2FA and branch protection on the organization; PyPI trusted publishing when that comes.
-  - **Messaging,** once the work backs it: no dependencies, no telemetry, no network except an explicit
-    upgrade from signed releases, plain files reviewed like code. A security page on the website
-    (pikelabs.ai/durablespec) and a Security section in the README, plus `SECURITY.md`.
+- **Security settings on GitHub** (done by hand, not in code): private vulnerability reporting on the
+  repository, branch protection on `main`, and 2FA required for the `pikelabs-ai` organization. PyPI
+  trusted publishing and build attestations when the package comes.
 - **Replay test.** Run past spec-touching and non-spec commits from a long-running repo through
   `durablespec-update`; record whether it would have written and where; compare with what happened. Put
   the results in the README as evidence.

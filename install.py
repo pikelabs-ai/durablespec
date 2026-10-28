@@ -27,6 +27,9 @@ NEWS = [
                 "the DurableSpec repo's template/README.md has the new diagram section if you want it."),
     ((0, 3, 4), "People in C4 diagrams are rounded boxes headed by a figure: ([\"👤<br/><b>name</b><br/>"
                 "[Person]<br/>...\"]). Ask your agent to \"update the people in the spec's diagrams\"."),
+    ((0, 5, 0), "check now fails on anything shaped like a secret and notes text that may be an instruction "
+                "to an AI or private detail; run check --strict in CI to fail on those notes too. From now "
+                "on, upgrade runs only releases signed by a DurableSpec release key."),
     ((0, 4, 0), "design/architecture.md is now the hub for diagrams: a ## Diagrams section near the top "
                 "lists every diagram in the spec with a link, and check fails if one is missing. Ask your "
                 "agent to \"add the Diagrams list to architecture.md\"."),

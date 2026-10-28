@@ -4,18 +4,22 @@
 Lives at doc/spec/durablespec.py and is identical in every repo; no settings. Python 3.8+, stdlib only.
 
     python3 doc/spec/durablespec.py index     # rewrite INDEX.md from each document's front matter
-    python3 doc/spec/durablespec.py check     # exit 1 if anything below is wrong
+    python3 doc/spec/durablespec.py check     # exit 1 if anything below is wrong [--strict]
     python3 doc/spec/durablespec.py version
     python3 doc/spec/durablespec.py upgrade   # install the newest release here [--dry-run]
 
 check verifies: every document has front matter with a purpose and no unknown keys; every owns: path is
 inside the repo and still exists; relative links between documents resolve; no two decision records
-share a number; every diagram is listed in design/architecture.md; INDEX.md is current. It also notes, without
+share a number; every diagram is listed in design/architecture.md; INDEX.md is current; nothing looks like
+a secret (keys, tokens, passwords in URLs). It also notes, without
 failing, design documents that name no code (fine for work not built yet) and top-level folders git tracks
-that no owns: line covers.
+that no owns: line covers, and text that may be an instruction to an AI or private detail (hidden
+comments, invisible characters, encoded blobs, private IP addresses, cloud account ids). --strict fails on
+those notes too, for CI in repos that take outside contributions.
 
-upgrade finds the newest release tag (vX.Y.Z) with git, fetches it into a temporary folder, and runs its
-installer against this repo. Set DURABLESPEC_SOURCE to use a mirror instead of GitHub.
+upgrade finds the newest release tag (vX.Y.Z) with git, fetches it into a temporary folder, checks that the
+tag is signed by a DurableSpec release key (RELEASE_KEYS), and only then runs its installer against this
+repo. Set DURABLESPEC_SOURCE to an https:// mirror instead of GitHub; mirrors keep the signed tags.
 
 Front matter is a small subset of YAML: one line per value; lists either inline [a, b] or as "- item"
 lines; values containing commas belong in the "- item" form.
@@ -27,7 +31,12 @@ import subprocess
 import sys
 import tempfile
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
+# upgrade runs a release only if its tag is signed by one of these keys. A new key ships in a release
+# signed by a key already listed here.
+RELEASE_KEYS = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwUArvUkMnYBIpwrXbXB7cRw8yRdAmEjSxoiJD5Nz2P",
+]
 
 SPEC = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(SPEC))
@@ -127,8 +136,9 @@ def render(docs):
 
 
 def outside_repo(pattern):
-    full = os.path.normpath(os.path.join(REPO, pattern))
-    return os.path.isabs(pattern) or not (full + os.sep).startswith(REPO + os.sep) and full != REPO
+    real = os.path.realpath(REPO)
+    full = os.path.realpath(os.path.join(REPO, pattern.split("*", 1)[0]))  # follows links, as reads would
+    return os.path.isabs(pattern) or not (full + os.sep).startswith(real + os.sep) and full != real
 
 
 def owned_path_exists(pattern):
@@ -138,7 +148,7 @@ def owned_path_exists(pattern):
     return os.path.exists(full)
 
 
-LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+LINK = re.compile(r"\[[^\]]{0,1000}\]\(([^)\s]{1,1000})\)")  # bounded, so odd text can't stall it
 NOT_CODE = {"doc", "docs", "node_modules", "target", "build", "dist", "out", "venv"}
 
 
@@ -219,6 +229,51 @@ def tracked_tops():
     return {p.split("/", 1)[0] for p in found.stdout.decode("utf-8", "replace").split("\0") if "/" in p}
 
 
+# Text that should never be in a spec: check fails on these.
+SECRETS = [
+    ("a private key", r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+    ("an AWS access key", r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b"),
+    ("a GitHub token", r"\b(?:gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{40,})"),
+    ("an AI provider key", r"\bsk-(?:ant-|proj-)?[A-Za-z0-9_-]{32,}"),
+    ("a Slack token", r"\bxox[abprs]-[A-Za-z0-9-]{10,}"),
+    ("a Google API key", r"\bAIza[0-9A-Za-z_-]{35}\b"),
+    ("a password in a URL", r"\b[a-z][a-z0-9+.-]{0,20}://[^/\s:@]{1,200}:([^/\s@]{1,200})@"),
+]
+PLACEHOLDER = re.compile(r"^(?:<[^>]*>|\$\{?\w+\}?|\*+|x+|\.\.\.|password|pass|secret|changeme)$", re.I)
+# Text that may be harmless but deserves a look: check notes these, and fails on them with --strict.
+WARNINGS = [
+    ("text addressed to an AI", r"(?i)\b(?:ignore|disregard|forget)\b[^.\n]{0,30}\b(?:previous|prior|above|earlier)"
+                                r"\b[^.\n]{0,20}\b(?:instructions|prompts?|rules)\b|\b(?:you are|you're|as) an? "
+                                r"(?:AI|LLM|large language model|language model)\b|<\|im_start\|>|\[INST\]"),
+    ("a hidden HTML comment", r"<!--"),
+    ("invisible characters", "[\u200b-\u200f\u202a-\u202e\u2060-\u2064]"),
+    ("a long encoded blob", r"[A-Za-z0-9+/=_-]{200,}"),
+    ("a plain-http link", r"\]\(http://"),
+    ("a private IP address", r"\b(?:10\.\d{1,3}|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b"),
+    ("a cloud account id", r"\barn:aws[\w-]*:[\w-]+:[\w-]*:\d{12}:|(?i:\baccount\b)[^\n]{0,30}\b\d{12}\b|"
+                           r"(?i:\b(?:tenant|subscription)\b)[^\n]{0,40}\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b"),
+]
+
+
+def scan(rel):
+    """(problems, warnings) for secrets and suspicious text in one document, by line."""
+    problems, warnings = [], []
+    with open(os.path.join(SPEC, rel), encoding="utf-8-sig") as fh:
+        lines = fh.read().split("\n")
+    for number, line in enumerate(lines, 1):
+        for what, pattern in SECRETS:
+            for m in re.finditer(pattern, line):
+                if m.groups() and PLACEHOLDER.match(m.group(1)):
+                    continue
+                problems.append("{}:{}: looks like {}; remove it, and rotate it if it was real".format(rel, number, what))
+                break
+        for what, pattern in WARNINGS:
+            if re.search(pattern, line):
+                warnings.append("{}:{}: {}; make sure it isn't an instruction or something private".format(
+                    rel, number, what))
+    return problems, warnings
+
+
 def uncovered_folders(docs):
     owned = [o.rstrip("/").split("/", 1)[0] for _, d in docs for o in d["owns"]]
     try:
@@ -230,8 +285,14 @@ def uncovered_folders(docs):
     return [t for t in tops if t not in owned and (tracked is None or t in tracked)]
 
 
-def check(docs):
+def check(docs, strict=False):
     problems, notes = [], []
+    for rel, _ in docs:
+        if rel == "README.md":  # the rules: its examples are deliberate
+            continue
+        found, warned = scan(rel)
+        problems += found
+        (problems if strict else notes).extend(warned)
     for rel, _ in docs:
         for target in broken_links(rel):
             problems.append("{}: link to '{}' does not resolve".format(rel, target))
@@ -276,11 +337,32 @@ def _release(text):
     return tuple(int(n) for n in text.split("."))
 
 
+def verify_release(clone, tag, tmp):
+    """None if the clone's tag is signed by a release key and is what was checked out, else why not."""
+    signers = os.path.join(tmp, "allowed_signers")
+    with open(signers, "w", encoding="utf-8") as fh:
+        fh.write("".join('durablespec-release namespaces="git" {}\n'.format(k) for k in RELEASE_KEYS))
+    checked = subprocess.run(["git", "-C", clone, "-c", "gpg.format=ssh", "-c", "gpg.ssh.allowedSignersFile=" + signers,
+                              "verify-tag", tag], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True)
+    if checked.returncode != 0:
+        said = (checked.stderr or checked.stdout).strip().splitlines()
+        return "its tag is not signed by a DurableSpec release key ({})".format(said[-1] if said else "no signature")
+    head, tagged = (subprocess.run(["git", "-C", clone, "rev-parse", ref], stdout=subprocess.PIPE,
+                                   universal_newlines=True).stdout.strip() for ref in ("HEAD", tag + "^{commit}"))
+    if not head or head != tagged:
+        return "the fetched files are not the signed release"
+    return None
+
+
 def upgrade(argv):
     if os.path.exists(os.path.join(REPO, "install.py")) and os.path.isdir(os.path.join(REPO, "skills", "durablespec-update")):
         print("this is the DurableSpec repository itself; pull it instead of upgrading it")
         return 1
     source = os.environ.get("DURABLESPEC_SOURCE", "https://github.com/pikelabs-ai/durablespec.git")
+    if not source.startswith("https://"):
+        print("refusing to upgrade from {}: only https:// sources are allowed".format(source))
+        return 1
     found = subprocess.run(["git", "ls-remote", "--tags", "--refs", source],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     if found.returncode != 0:
@@ -302,6 +384,11 @@ def upgrade(argv):
         if fetched.returncode != 0:
             print("could not fetch v{}: {}".format(latest, fetched.stderr.strip()))
             return 1
+        problem = verify_release(clone, "v" + latest, tmp)
+        if problem:
+            print("refusing to install v{}: {}. Nothing was changed.".format(latest, problem))
+            return 1
+        print("v{} is signed by a DurableSpec release key.".format(latest), flush=True)
         extra = ["--dry-run"] if "--dry-run" in argv else []
         return subprocess.run([sys.executable, os.path.join(clone, "install.py"), REPO] + extra).returncode
 
@@ -320,7 +407,7 @@ def main(argv):
         print("wrote doc/spec/INDEX.md ({} documents)".format(len(docs)))
         return 0
     if command == "check":
-        problems, notes = check(docs)
+        problems, notes = check(docs, strict="--strict" in argv)
         for p in problems:
             print("  problem: " + p)
         for n in notes:

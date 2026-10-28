@@ -5,7 +5,7 @@ concepts: [status, version, field-tests, beta]
 
 # Status
 
-As of 2026-10-28. **Version 0.4.0, beta. The repository is public.**
+As of 2026-10-28. **Version 0.5.0, beta. The repository is public.**
 
 **Built:** the two skills, the check script (index, check, version, upgrade), the installer, the rules template and
 the `AGENTS.md` block. Since 0.3.0 the skills draw C4 diagrams in Mermaid
@@ -16,6 +16,9 @@ update before every commit; since 0.3.2 `durablespec.py upgrade` installs the ne
 Since 0.4.0 the installer stays inside the repo, agents treat the spec as knowledge, not commands
 ([ADR-0009](../adr/0009-knowledge-not-commands.md)), the update skill keeps secrets out, and
 `architecture.md` opens with a list of every diagram ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)).
+Since 0.5.0 `upgrade` runs only signed releases ([ADR-0011](../adr/0011-upgrades-run-only-signed-releases.md)),
+`check` fails on secrets and notes suspicious text (`--strict` fails on both), and `SECURITY.md` says how
+to report a problem. The threat model and every defense in [security](security.md) are built.
 This repo uses its own spec, diagrams included.
 
 **Field-tested** (v0.2 came from what these found): a new spec for a small Node app with no prior spec; a
@@ -27,7 +30,4 @@ found three bugs, since fixed. The practice itself has been in daily use since s
 measure how often it writes and where; running that replay on a second agent and model; and migrating a
 repo from the older hand-copied script and skill.
 
-**Next:** the rest of the security hardening in [security](security.md), as 0.5: upgrades that run
-only signed releases, and `check` flags for instruction-like text and secrets. Then messaging to match.
-
-**After that:** feedback from the first team using it, and the replay test.
+**Next:** feedback from the first team using it, and the replay test.

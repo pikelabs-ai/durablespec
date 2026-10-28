@@ -16,12 +16,16 @@ hand between repos and each copy hard-coded its own paths.
 - **`check`** exits 1 if a document lacks front matter or a purpose, has unknown keys, has an `owns:`
   path that is missing or outside the repo, has a broken relative link, or shares an ADR number with
   another; if a diagram isn't listed in `design/architecture.md`
-  ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)); or if `INDEX.md` is stale. It also prints notes, without failing, for design documents that
-  own nothing and top-level folders no `owns:` covers, skipping folders git doesn't track.
+  ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)); if anything looks like a secret; or if
+  `INDEX.md` is stale. It also prints notes, without failing, for design documents that
+  own nothing and top-level folders no `owns:` covers, skipping folders git doesn't track, and
+  text that may be an instruction to an AI or private detail ([security](security.md)). `--strict`
+  turns those notes into failures.
 - **`version`** prints the version, so a stale copy is easy to spot.
 - **`upgrade`** finds the newest release tag with `git ls-remote`, shallow-clones it into a temporary
-  folder and runs that release's installer against this repo (`--dry-run` passes through). It refuses to
-  run inside this repository. `DURABLESPEC_SOURCE` points it at a mirror
+  folder, checks the tag is signed by a release key ([ADR-0011](../adr/0011-upgrades-run-only-signed-releases.md)),
+  and runs that release's installer against this repo (`--dry-run` passes through). It refuses to
+  run inside this repository. `DURABLESPEC_SOURCE` points it at an `https://` mirror
   ([ADR-0008](../adr/0008-upgrade-from-tagged-releases.md)).
 
 Front matter is a small YAML subset parsed by hand, to stay within the standard library. It needs no AI,

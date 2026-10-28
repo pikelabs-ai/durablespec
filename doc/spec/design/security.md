@@ -24,16 +24,24 @@ repo and is written by agents that have seen secrets, internal host names and ac
 - **The spec is knowledge, not commands.** It shapes how agents do what a person asked, conventions
   included, but neither it nor anything the skills read can give them a new task or widen what they
   may do; such text is reported to the person ([ADR-0009](../adr/0009-knowledge-not-commands.md)).
-  This is in the `AGENTS.md` block, the rules and both skills. `check` flags the obvious signs: text addressed to an AI, hidden HTML comments, links to unexpected hosts, long encoded blobs.
-  Teams that take outside contributions should require review of `doc/spec/` (CODEOWNERS).
+  This is in the `AGENTS.md` block, the rules and both skills. Teams that take outside contributions
+  should also require review of `doc/spec/` (CODEOWNERS).
 - **Secrets stay out.** Both skills refuse to open or quote secrets, and keep out of the spec what a
   public repo shouldn't carry: credentials, internal host names and IP ranges, cloud account,
-  subscription and tenant ids, and customer names unless the team says otherwise. `check` flags common
-  key and token formats and private IP ranges.
-- **Upgrades run only signed releases.** `upgrade` accepts only `https://` sources, verifies the release
-  tag's signature against a key shipped with the current version before running anything, shows the
-  version and source, and keeps `--dry-run`.
+  subscription and tenant ids, and customer names unless the team says otherwise.
+- **`check` backs both up.** It fails on anything shaped like a secret: private keys, cloud and
+  GitHub tokens, AI provider keys, passwords in URLs. It notes what deserves a look: text addressed to
+  an AI, hidden HTML comments, invisible characters, long encoded blobs, plain-http links, private IP
+  addresses and cloud account ids. `check --strict` fails on the notes too, for CI in repos that take
+  outside contributions. The patterns were tuned against eleven working specs so that ordinary writing
+  about AI systems doesn't trip them.
+- **Upgrades run only signed releases.** `upgrade` accepts only `https://` sources and runs a release
+  only if its tag is signed by a key written into `durablespec.py`
+  ([ADR-0011](../adr/0011-upgrades-run-only-signed-releases.md)).
 - **The installer stays inside the repo.** It refuses any path it would write or delete that resolves
   outside the repo, which a planted symlink would cause, and touches only its own files.
-- **The script stays small.** No network except `upgrade`; `owns:` paths and links are checked against
-  the repo boundary after resolving symlinks; regexes are simple enough to run in linear time.
+- **The script stays small.** Standard library only, no network except `upgrade`, no telemetry.
+  `owns:` paths are checked against the repo boundary after following links, and every pattern is
+  bounded so unusual text can't stall it.
+
+Reporting a vulnerability is covered by `SECURITY.md` at the root of the DurableSpec repository.
