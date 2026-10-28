@@ -17,7 +17,7 @@ hand between repos and each copy hard-coded its own paths.
   path that is missing or outside the repo, has a broken relative link, or shares an ADR number with
   another; if a diagram isn't listed in `design/architecture.md`
   ([ADR-0010](../adr/0010-architecture-is-the-diagram-hub.md)); or if `INDEX.md` is stale. It also prints notes, without failing, for design documents that
-  own nothing and top-level folders no `owns:` covers.
+  own nothing and top-level folders no `owns:` covers, skipping folders git doesn't track.
 - **`version`** prints the version, so a stale copy is easy to spot.
 - **`upgrade`** finds the newest release tag with `git ls-remote`, shallow-clones it into a temporary
   folder and runs that release's installer against this repo (`--dry-run` passes through). It refuses to

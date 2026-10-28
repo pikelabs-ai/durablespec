@@ -23,8 +23,6 @@ concepts: [backlog, todo, open-questions]
   Decide whether they belong in `constitution/`, area documents, or a new place.
 - **Retire the old OneSpec repository:** push the pointer README and archive it.
 - **Fixes from the 0.3 blind re-create of a large monorepo** (2026-10-12):
-  - The README's decision-record example has no front matter, but every document needs it and `check`
-    fails without it. Show front matter in the example.
   - Say whether overlapping `owns:` (a parent folder in one area, subfolders in another) is allowed, and
     which wins.
   - Give stale existing documents their own heading in `backlog.md`, apart from open questions. Cover a
@@ -63,4 +61,4 @@ concepts: [backlog, todo, open-questions]
 
 ## Open questions
 
-- Should `check` read the repo's `.gitignore` before noting unowned top-level folders?
+None right now.

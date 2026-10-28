@@ -63,6 +63,11 @@ When a change does qualify, move the **one** document that owns it:
   nothing until the code exists.
 - **Decision records** are named `adr/NNNN-short-title.md`, four digits from `0001`, and look like this:
   ```
+  ---
+  purpose: "Why amounts are stored in the currency they were charged in."
+  concepts: [currency, amounts, invoices]
+  ---
+
   # ADR-0007: Store amounts in their original currency
   **Status:** accepted, 2026-10-12.   (or: replaced by ADR-0012; or: recorded after the fact, from <evidence>)
   **Context.** What forced a choice.

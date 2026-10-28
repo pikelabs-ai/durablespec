@@ -10,8 +10,9 @@ Lives at doc/spec/durablespec.py and is identical in every repo; no settings. Py
 
 check verifies: every document has front matter with a purpose and no unknown keys; every owns: path is
 inside the repo and still exists; relative links between documents resolve; no two decision records
-share a number; INDEX.md is current. It also notes, without failing, design documents that name no code
-(fine for work not built yet) and top-level folders that no owns: line covers.
+share a number; every diagram is listed in design/architecture.md; INDEX.md is current. It also notes, without
+failing, design documents that name no code (fine for work not built yet) and top-level folders git tracks
+that no owns: line covers.
 
 upgrade finds the newest release tag (vX.Y.Z) with git, fetches it into a temporary folder, and runs its
 installer against this repo. Set DURABLESPEC_SOURCE to use a mirror instead of GitHub.
@@ -206,6 +207,18 @@ def unlisted_diagrams(docs):
     return missing
 
 
+def tracked_tops():
+    """Top-level folders holding files git tracks, or None outside a git repo."""
+    try:
+        found = subprocess.run(["git", "-C", REPO, "ls-files", "-z"], stdout=subprocess.PIPE,
+                               stderr=subprocess.DEVNULL)
+    except OSError:
+        return None
+    if found.returncode != 0:
+        return None
+    return {p.split("/", 1)[0] for p in found.stdout.decode("utf-8", "replace").split("\0") if "/" in p}
+
+
 def uncovered_folders(docs):
     owned = [o.rstrip("/").split("/", 1)[0] for _, d in docs for o in d["owns"]]
     try:
@@ -213,7 +226,8 @@ def uncovered_folders(docs):
                       and not n.startswith(".") and n not in NOT_CODE)
     except OSError:
         return []
-    return [t for t in tops if t not in owned]
+    tracked = tracked_tops()  # ignored and untracked folders aren't the repo's code
+    return [t for t in tops if t not in owned and (tracked is None or t in tracked)]
 
 
 def check(docs):
